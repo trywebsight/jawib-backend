@@ -3,14 +3,19 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Bavix\Wallet\Traits\HasWallet;
+use Bavix\Wallet\Interfaces\Wallet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Bavix\Wallet\Traits\CanPay;
+use Bavix\Wallet\Interfaces\Customer;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Wallet, Customer
 {
-    use HasFactory, HasApiTokens;
+    use HasFactory, HasApiTokens, HasWallet, CanPay;
 
     protected $fillable = ['name', 'email', 'country_code', 'phone', 'avatar', 'user_type', 'password', 'game_credits'];
 
@@ -29,22 +34,4 @@ class User extends Authenticatable
         return $this->hasMany(Game::class);
     }
 
-    public function transactions()
-    {
-        return $this->hasMany(Transaction::class);
-    }
-
-    public function addCredits($amount)
-    {
-        $this->increment('game_credits', $amount);
-    }
-
-    public function useCredit()
-    {
-        if ($this->game_credits > 0) {
-            $this->decrement('game_credits');
-            return true;
-        }
-        return false;
-    }
 }

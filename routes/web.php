@@ -8,21 +8,12 @@ use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
 
+    $user = User::first();
 
-    $filePath = 'test.txt';
-    $fileContent = 'hello';
+    // $user->deposit(2); // 0
 
-    // Attempt to upload the file to the DigitalOcean Spaces disk
-    $result = Storage::disk('do')->put($filePath, $fileContent);
+    return $user->balance; // 0
 
-    return $result;
-
-
-
-
-
-    $game = Game::with('questions', 'categories')->first();
-    return $game;
 
 
 

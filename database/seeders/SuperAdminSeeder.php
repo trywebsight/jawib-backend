@@ -24,7 +24,7 @@ class SuperAdminSeeder extends Seeder
         );
 
         // Create all permissions (if you want to attach permissions to this role)
-        $permissions = Permission::where('guard_name', $guard)->get();
+        $permissions = Permission::get();
         $superAdminRole->syncPermissions($permissions);
 
         // Create a user with the admin guard and assign Super Admin role

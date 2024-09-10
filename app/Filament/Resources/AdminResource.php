@@ -19,11 +19,6 @@ class AdminResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-user-plus';
 
-    public static function canViewAny(): bool
-    {
-        return auth('admin')->user()?->roles[0]?->id == 1;
-    }
-
     public static function getNavigationGroup(): ?string
     {
         return __('filament-shield::filament-shield.nav.group');

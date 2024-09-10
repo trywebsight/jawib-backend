@@ -5,15 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Model
+class Purchase extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
-    protected $hidden = [
-        'credit_change',
-        'created_at',
-        'updated_at',
+    protected $fillable = [
+        'user_id',
+        'package_id',
+        'tap_transaction_id',
+        'amount',
+        'payment_status',
+    ];
+
+    protected $casts = [
+        'amount' => 'decimal:2',
     ];
 
     public function user()
@@ -25,5 +30,4 @@ class Transaction extends Model
     {
         return $this->belongsTo(Package::class);
     }
-
 }

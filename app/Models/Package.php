@@ -22,17 +22,4 @@ class Package extends Model
     protected $casts = [
         'price' => 'float',
     ];
-
-    public function purchase(User $user)
-    {
-        $user->addCredits($this->games_count);
-
-        Transaction::create([
-            'user_id' => $user->id,
-            'package_id' => $this->id,
-            'credit_change' => $this->games_count,
-            'type' => 'purchase',
-        ]);
-    }
-
 }

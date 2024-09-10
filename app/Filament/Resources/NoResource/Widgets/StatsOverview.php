@@ -5,7 +5,7 @@ namespace App\Filament\Resources\NoResource\Widgets;
 use App\Enums\TapStatusEnum;
 use App\Models\Category;
 use App\Models\Question;
-use App\Models\Transaction;
+use App\Models\Purchase;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -17,8 +17,8 @@ class StatsOverview extends BaseWidget
 
     private function totalEarning()
     {
-        $total = Transaction::where('payment_status', TapStatusEnum::CAPTURED)
-            ->join('packages', 'transactions.package_id', '=', 'packages.id')
+        $total = Purchase::where('payment_status', TapStatusEnum::CAPTURED)
+            ->join('packages', 'purchases.package_id', '=', 'packages.id')
             ->sum('packages.price');
 
         // Assuming you have a method or a config value to get the currency symbol
@@ -28,18 +28,18 @@ class StatsOverview extends BaseWidget
     private function earningsTrend()
     {
         // Query to get the sum of earnings grouped by day for the last 7 days
-        $earnings = Transaction::select(
-            DB::raw('DATE(transactions.created_at) as date'),
+        $earnings = Purchase::select(
+            DB::raw('DATE(purchases.created_at) as date'),
             DB::raw('SUM(packages.price) as total')
         )
-            ->join('packages', 'transactions.package_id', '=', 'packages.id')
+            ->join('packages', 'purchases.package_id', '=', 'packages.id')
             ->where('payment_status', TapStatusEnum::CAPTURED)
             ->groupBy('date')
             ->orderBy('date')
             ->limit(7)
             ->pluck('total', 'date')
             ->toArray();
-        // Ensure we have data for each day in the last 7 days, even if no transactions occurred
+        // Ensure we have data for each day in the last 7 days, even if no purchases occurred
         $dates = collect(range(0, 6))->map(function ($daysAgo) {
             return Carbon::today()->subDays($daysAgo)->format('Y-m-d');
         })->reverse();

@@ -6,7 +6,7 @@ use App\Enums\TapStatusEnum;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Package;
-use App\Models\Transaction;
+use App\Models\Purchase;
 use App\Services\TapPayment;
 
 class PackagePaymentController extends Controller
@@ -19,22 +19,22 @@ class PackagePaymentController extends Controller
         }
         $user = auth('sanctum')->user();
 
-        $transaction = Transaction::firstOrCreate(
+        $purchase = Purchase::firstOrCreate(
             [
                 'user_id' => $user->id,
                 'package_id' => $package->id,
-                'type' => 'purchase',
-                'credit_change' => $package->games_count,
+                'amount' => $package->price,
+                'credits' => $package->games_count,
                 'payment_status' => TapStatusEnum::INITIATED,
             ]
         );
 
-        $tap = TapPayment::createCharge($this->paymentData($transaction));
+        $tap = TapPayment::createCharge($this->paymentData($purchase));
 
-        $transaction->tap_id = $tap['id'];
-        $transaction->payment_link = $tap['transaction']['url'] ?? false;
+        $purchase->tap_id = $tap['id'];
+        $purchase->payment_link = $tap['purchase']['url'] ?? false;
 
-        return $this->success($transaction);
+        return $this->success($purchase);
     }
 
     public function callback(Request $request)
@@ -45,25 +45,25 @@ class PackagePaymentController extends Controller
 
         $tap_response = TapPayment::retrieveCharge($request->tap_id);
 
-        $transaction = Transaction::find($tap_response['metadata']['transaction_id'] ?? null);
-        if (!$transaction) {
-            return $this->error([], __('invalid transaction id'));
+        $purchase = Purchase::find($tap_response['metadata']['purchase_id'] ?? null);
+        if (!$purchase) {
+            return $this->error([], __('invalid purchase id'));
         }
 
-        $transaction->update([
-            'tap_id' => $tap_response['id'] ?? $transaction->tap_id,
-            'payment_status' => $tap_response['status'] ?? $transaction->payment_status,
+        $purchase->update([
+            'tap_id' => $tap_response['id'] ?? $purchase->tap_id,
+            'payment_status' => $tap_response['status'] ?? $purchase->payment_status,
         ]);
 
         if (isset($tap_response['status']) && $tap_response['status'] == TapStatusEnum::CAPTURED) {
-            return $this->success($transaction, __('paid successfully'));
+            return $this->success($purchase, __('paid successfully'));
         }
-        return $this->error($transaction, __("payment failed"));
+        return $this->error($purchase, __("payment failed"));
     }
-    private function paymentData($transaction)
+    private function paymentData($purchase)
     {
-        $user = $transaction->user;
-        $package = $transaction->package;
+        $user = $purchase->user;
+        $package = $purchase->package;
 
         return [
             'amount' => $package->price,
@@ -72,7 +72,7 @@ class PackagePaymentController extends Controller
             'threeDSecure' => false,
             'save_card' => false,
             'metadata' => [
-                'transaction_id' => $transaction->id,
+                'purchase_id' => $purchase->id,
                 'package_id' => $package->id,
                 'user_id' => $user->id,
             ],

@@ -3,10 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Enums\TapStatusEnum;
-use App\Filament\Resources\TransactionResource\Pages;
-use App\Filament\Resources\TransactionResource\RelationManagers;
+use App\Filament\Resources\PurchaseResource\Pages;
+use App\Filament\Resources\PurchaseResource\RelationManagers;
 use App\Models\Package;
-use App\Models\Transaction;
+use App\Models\Purchase;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -16,11 +16,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class TransactionResource extends Resource
+class PurchaseResource extends Resource
 {
-    protected static ?string $model = Transaction::class;
+    protected static ?string $model = Purchase::class;
+
 
     protected static ?string $navigationIcon = 'heroicon-c-arrows-right-left';
+
 
     public static function form(Form $form): Form
     {
@@ -36,11 +38,12 @@ class TransactionResource extends Resource
                     ->afterStateUpdated(function ($state, callable $set) {
                         $package = Package::find($state);
                         if ($package) {
-                            $set('credit_change', $package->games_count);
+                            $set('credits', $package->games_count);
+                            $set('amount', $package->price);
                         }
                     }),
-                Forms\Components\Hidden::make('credit_change')
-                    ->required(),
+                Forms\Components\Hidden::make('credits'),
+                Forms\Components\Hidden::make('amount'),
                 Forms\Components\Select::make('payment_status')
                     ->options([
                         TapStatusEnum::INITIATED        => __(TapStatusEnum::INITIATED),
@@ -63,13 +66,6 @@ class TransactionResource extends Resource
             Tables\Columns\TextColumn::make('package.title')
                 ->label(__('package'))
                 ->sortable(),
-            // Tables\Columns\TextColumn::make('credit_change')
-            //     ->numeric()
-            //     ->sortable()
-            //     ->toggleable(isToggledHiddenByDefault: true),
-            // Tables\Columns\TextColumn::make('type')
-            //     ->searchable()
-            //     ->toggleable(isToggledHiddenByDefault: true),
             Tables\Columns\TextColumn::make('tap_id')
                 ->searchable()
                 ->toggleable(isToggledHiddenByDefault: true),
@@ -132,10 +128,10 @@ class TransactionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTransactions::route('/'),
-            'create' => Pages\CreateTransaction::route('/create'),
-            'view' => Pages\ViewTransaction::route('/{record}'),
-            'edit' => Pages\EditTransaction::route('/{record}/edit'),
+            'index' => Pages\ListPurchases::route('/'),
+            'create' => Pages\CreatePurchase::route('/create'),
+            'view' => Pages\ViewPurchase::route('/{record}'),
+            'edit' => Pages\EditPurchase::route('/{record}/edit'),
         ];
     }
 }

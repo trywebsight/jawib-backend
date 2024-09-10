@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers\GamesRelationManager;
+use App\Filament\Resources\UserResource\RelationManagers\PurchasesRelationManager;
 use App\Filament\Resources\UserResource\RelationManagers\TransactionsRelationManager;
+use App\Jobs\UserGetCreditJob;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs;
@@ -38,7 +40,7 @@ class UserResource extends Resource
                 TextInput::make('name')->label(__('name'))->autofocus()->required(),
                 TextInput::make('email')->label(__('email'))->email()->nullable(),
                 TextInput::make('phone')->label(__('phone'))->numeric()->required(),
-                // Forms\Components\TextInput::make('game_credits')
+                // Forms\Components\TextInput::make('credits')
                 //     ->numeric()
                 //     ->required(),
                 TextInput::make('password')->label(__('password'))->password()->revealable()
@@ -57,7 +59,9 @@ class UserResource extends Resource
                 TextColumn::make('name')->label(__('name')),
                 TextColumn::make('email')->label(__('email')),
                 TextColumn::make('phone')->label(__('phone')),
-                TextColumn::make('game_credits')->label(__('game credits')),
+                TextColumn::make('balance')->label(__('game credits'))
+                    ->badge()
+                    ->color('success'),
             ])
             ->filters([
                 //
@@ -67,23 +71,26 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make(),
                 // Tables\Actions\DeleteAction::make(),
                 Tables\Actions\Action::make('send_credit_to_user')
-                    ->label('credit')
+                    ->label('add credit')
                     ->icon('heroicon-o-currency-dollar')
                     ->color('gray')
                     ->form([
-                        TextInput::make('game_credits')
-                            ->label(__('Game credits amount'))
+                        TextInput::make('amount')
+                            ->label(__('credits amount'))
                             ->inputMode('numeric') // Set input mode to numeric
                             ->integer()
-                            ->default(fn($record) => $record->game_credits)
+                            ->minValue(0)
+                            // ->default(fn($record) => $record->credits)
                             ->required()
-                            ->placeholder('Please provide the amount you want to credit this user.'),
+                            ->placeholder('5'),
                     ])
                     ->action(function (array $data, $record) {
-                        // Update user's game credits
-                        $user = User::find($record->id); // Find the user by record ID
-                        $user->game_credits = $data['game_credits']; // Add the credits to the existing amount
-                        $user->save(); // Save the updated game credits
+                        // $user = User::find($record->id); // Find the user by record ID
+                        $user = $record; // Find the user by record ID
+
+                        $user->deposit($data['amount'], ['description' => 'credit added by admin']);
+
+                        UserGetCreditJob::dispatch($user);
 
                         Notification::make()
                             ->title(__('user games credit updated'))
@@ -102,8 +109,9 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            TransactionsRelationManager::class,
+            PurchasesRelationManager::class,
             GamesRelationManager::class,
+            // TransactionsRelationManager::class,
         ];
     }
 

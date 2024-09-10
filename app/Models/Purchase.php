@@ -9,13 +9,7 @@ class Purchase extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'package_id',
-        'tap_transaction_id',
-        'amount',
-        'payment_status',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'amount' => 'decimal:2',

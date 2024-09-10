@@ -10,9 +10,12 @@ Route::get('/', function () {
 
     $user = User::first();
 
-    // $user->deposit(2); // 0
+    // $user->deposit(2);
+    // $user->withdraw(7);
 
-    return $user->balance; // 0
+
+    return $user->transactions;
+    return $user->purchases;
 
 
 

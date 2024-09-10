@@ -53,7 +53,9 @@ class PackageResource extends Resource
                     ->prefix(__('kwd')),
                 Forms\Components\FileUpload::make('image')->label(__('image'))
                     ->directory('packages')
-                    ->image(),
+                    ->image()
+                    ->disk('do')
+                    ->visibility('public'),
                 Forms\Components\Textarea::make('content')->label(__('description'))
                     ->columnSpanFull(),
             ]);
@@ -72,7 +74,8 @@ class PackageResource extends Resource
                 Tables\Columns\TextColumn::make('price')->label(__('price'))
                     ->money('KWD')
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('image')->label(__('image')),
+                Tables\Columns\ImageColumn::make('image')->label(__('image'))
+                    ->disk('do'),
             ])
             ->filters([
                 //

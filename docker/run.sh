@@ -2,14 +2,12 @@
 
 cd /var/www
 
-php artisan migrate
 php artisan cache:clear
 php artisan config:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
 php artisan storage:link
 
+chmod 777 /var/www/bootstrap/cache
 php artisan queue:work &
+php artisan migrate --force
 
 /usr/bin/supervisord -c /etc/supervisord.conf

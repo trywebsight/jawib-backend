@@ -111,7 +111,7 @@ class UserResource extends Resource
         return [
             PurchasesRelationManager::class,
             GamesRelationManager::class,
-            // TransactionsRelationManager::class,
+            TransactionsRelationManager::class,
         ];
     }
 

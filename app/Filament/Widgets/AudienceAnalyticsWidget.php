@@ -1,20 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\NoResource\Widgets;
+namespace App\Filament\Widgets;
 
-use App\Enums\TapStatusEnum;
-use App\Models\Category;
-use App\Models\Question;
-use App\Models\Purchase;
-use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Enums\TapStatusEnum;
+use App\Models\Purchase;
 
-class StatsOverview extends BaseWidget
+class AudienceAnalyticsWidget extends BaseWidget
 {
-
     private function totalEarning()
     {
         $total = Purchase::where('payment_status', TapStatusEnum::CAPTURED)
@@ -58,9 +54,9 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-o-currency-dollar')
                 ->chart($this->earningsTrend()) // Example data for the chart, replace with real data if needed
                 ->color('success'),
-            Stat::make(__('users'), User::count()),
-            Stat::make(__('questions'), Question::count()),
-            Stat::make(__('categories'), Category::count()),
+            Stat::make('Top User by Purchase', 'John Doe')
+                ->description('$5,678 total spent')
+                ->descriptionIcon('heroicon-m-currency-dollar'),
         ];
     }
 }

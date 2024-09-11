@@ -13,13 +13,12 @@ Route::get('/', function () {
     // $user->deposit(2);
     // $user->withdraw(7);
 
-
     return $user->transactions;
     return $user->purchases;
 
-
-
-
-
     return view('welcome');
 });
+
+Route::get('/login', function () {
+    return redirect()->away(env("FRONTEND_URL") . "/login");
+})->middleware('guest')->name('login');

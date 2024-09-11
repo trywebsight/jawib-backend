@@ -79,7 +79,7 @@ class QuestionResource extends Resource
                     ->schema([
                         Forms\Components\TextArea::make('question')
                             ->required()
-                            ->maxLength(500)
+                            ->maxLength(255)
                             ->label(__('question text')),
 
                         Forms\Components\FileUpload::make('question_media_url')
@@ -98,7 +98,7 @@ class QuestionResource extends Resource
                     ->schema([
                         Forms\Components\TextArea::make('answer')
                             ->required()
-                            ->maxLength(500)
+                            ->maxLength(255)
                             ->label(__('answer text')),
 
                         Forms\Components\FileUpload::make('answer_media_url')
@@ -120,7 +120,16 @@ class QuestionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->searchable()->label(__('id'))->toggleable(),
-                Tables\Columns\TextColumn::make('question')->searchable()->label(__('question')),
+                Tables\Columns\TextColumn::make('question')->searchable()->label(__('question'))
+                    ->limit(30)
+                    ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
+                        $state = $column->getState();
+                        if (strlen($state) <= $column->getCharacterLimit()) {
+                            return null;
+                        }
+                        // Only render the tooltip if the column content exceeds the length limit.
+                        return $state;
+                    }),
                 Tables\Columns\TextColumn::make('answer')->searchable()->label(__('answer')),
                 Tables\Columns\TextColumn::make('level')
                     ->label(__('level'))

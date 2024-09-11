@@ -63,6 +63,7 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id'),
                 ImageColumn::make('image')->label(__('image'))->disk('do')->circular(),
                 TextColumn::make('title')->label(__('title'))->sortable()->searchable(),
                 TextColumn::make('questions_count')

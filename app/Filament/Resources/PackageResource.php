@@ -65,6 +65,7 @@ class PackageResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('title')->label(__('title'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('games_count')->label(__('games_count'))

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\PackagePaymentController;
+use App\Http\Controllers\Api\QuestionFeedbackController;
 use Illuminate\Support\Facades\Route;
 
 // auth routes
@@ -34,9 +35,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AccountController::class, 'user']);
     Route::put('/user/update-info', [AccountController::class, 'update_info']);
 
-    // get user's games
-    Route::get('/my-games', [GameController::class, 'myGames']);
     // buy package
     Route::get('/packages/{id}/buy', [PackagePaymentController::class, 'buy']);
+    // games
+    Route::get('/games/my-games', [GameController::class, 'my_games']);
+    Route::post('/games/create', [GameController::class, 'create_game']);
+    Route::get('/games/{id}', [GameController::class, 'get_game']);
+
+    // VAR - question feedback
+    Route::post('/question-feedback', [QuestionFeedbackController::class, 'feedback']);
 });
 Route::get('/tap/callback', [PackagePaymentController::class, 'callback'])->name('tap_callback');

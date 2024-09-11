@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Question;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -75,7 +76,7 @@ class QuestionResource extends Resource
 
                 Forms\Components\Section::make(__('question'))
                     ->schema([
-                        Forms\Components\TextArea::make('question')
+                        Textarea::make('question')
                             ->required()
                             ->maxLength(255)
                             ->label(__('question text')),
@@ -94,7 +95,7 @@ class QuestionResource extends Resource
 
                 Forms\Components\Section::make(__('answer'))
                     ->schema([
-                        Forms\Components\TextArea::make('answer')
+                        Textarea::make('answer')
                             ->required()
                             ->maxLength(255)
                             ->label(__('answer text')),

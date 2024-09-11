@@ -18,7 +18,7 @@ class QuestionFeedbackResource extends Resource
 {
     protected static ?string $model = QuestionFeedback::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-chat-bubble-bottom-center-text';
 
     public static function form(Form $form): Form
     {

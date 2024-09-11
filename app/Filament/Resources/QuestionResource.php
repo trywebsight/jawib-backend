@@ -22,8 +22,6 @@ class QuestionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-question-mark-circle';
 
-    protected static ?int $navigationSort = 15;
-
     public static function getNavigationLabel(): string
     {
         return __('questions');

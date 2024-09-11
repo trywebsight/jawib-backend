@@ -76,7 +76,7 @@ class QuestionResource extends Resource
 
                 Forms\Components\Section::make(__('question'))
                     ->schema([
-                        Textarea::make('question')
+                        Forms\Components\TextInput::make('question')
                             ->required()
                             ->maxLength(255)
                             ->label(__('question text')),
@@ -95,7 +95,7 @@ class QuestionResource extends Resource
 
                 Forms\Components\Section::make(__('answer'))
                     ->schema([
-                        Textarea::make('answer')
+                        Forms\Components\TextInput::make('answer')
                             ->required()
                             ->maxLength(255)
                             ->label(__('answer text')),

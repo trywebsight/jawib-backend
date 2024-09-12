@@ -54,7 +54,8 @@ class PackageResource extends Resource
                 Forms\Components\FileUpload::make('image')->label(__('image'))
                     ->directory('packages')
                     ->image()
-                    ->disk('do')
+                    // ->disk('do')
+                    ->disk('public')
                     ->visibility('public'),
                 Forms\Components\Textarea::make('content')->label(__('description'))
                     ->columnSpanFull(),

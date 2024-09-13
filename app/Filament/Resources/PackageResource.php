@@ -11,8 +11,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PackageResource extends Resource
 {
@@ -54,9 +52,12 @@ class PackageResource extends Resource
                 Forms\Components\FileUpload::make('image')->label(__('image'))
                     ->directory('packages')
                     ->image()
-                    // ->disk('do')
-                    ->disk('public')
-                    ->visibility('public'),
+                    ->disk('do')
+                    ->visibility('public')
+                    ->afterStateUpdated(function ($state, $component) {
+                        // Log after state is updated (file selected/uploaded)
+                        dd('File state updated', ['state' => $state]);
+                    }),
                 Forms\Components\Textarea::make('content')->label(__('description'))
                     ->columnSpanFull(),
             ]);

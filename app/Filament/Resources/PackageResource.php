@@ -53,11 +53,7 @@ class PackageResource extends Resource
                     ->directory('packages')
                     ->image()
                     ->disk('do')
-                    ->visibility('public')
-                    ->afterStateUpdated(function ($state, $component) {
-                        // Log after state is updated (file selected/uploaded)
-                        dd('File state updated', ['state' => $state]);
-                    }),
+                    ->visibility('public'),
                 Forms\Components\Textarea::make('content')->label(__('description'))
                     ->columnSpanFull(),
             ]);

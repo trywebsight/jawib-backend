@@ -29,8 +29,8 @@ class AppServiceProvider extends ServiceProvider
                     'en' => asset('flags/en.svg'),
                 ]);
         });
-        if (env('APP_ENV') !== 'local') {
+        // if (env('APP_ENV') !== 'local') {
             URL::forceScheme('https');
-        }
+        // }
     }
 }

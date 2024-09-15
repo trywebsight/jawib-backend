@@ -21,4 +21,7 @@ jobs:
           cd /root/jawib-backend/  && git pull  && 
           docker  buildx build -t    jawib-backend . &&
           docker rm -f jawib-backend
-          docker run -d -p 3000:80 --name=jawib-backend --restart=unless-stopped  jawib-backend"
+          docker run -d -p 3000:80 --name=jawib-backend --restart=unless-stopped  jawib-backend
+          docker cp /root/jawib-backend/docker/FileUploadController.php  jawib-backend:/var/www/vendor/livewire/livewire/src/Features/SupportFileUploads
+          docker restart jawib-backend "
+

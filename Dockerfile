@@ -1,15 +1,14 @@
-FROM php:8.2-fpm-buster
+FROM php:8.3-fpm
 
 # Set working directory
 WORKDIR /var/www
 
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    zip \
-    curl \
-    lua-zlib-dev \
-    nginx \
-    supervisor python3-pip python3-cffi python3-brotli libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 libzip-dev sudo   &&  apt-get clean && rm -rf /var/lib/apt/lists/*
+# Add docker php ext repo
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+# Install php extensions
+RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
+    install-php-extensions mbstring imagick pdo_mysql zip exif pcntl gd memcached sockets
 
 
 RUN apt-get update && apt-get install -y \
@@ -19,52 +18,67 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install intl \
     && docker-php-ext-install mbstring
 RUN docker-php-ext-enable intl mbstring
-
-
-RUN docker-php-ext-install  pdo pdo_mysql zip exif gd
-
-
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install dependencies
+RUN apt-get update -y && apt-get -y install \
+    build-essential \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    unzip \
+    git \
+    curl \
+    lua-zlib-dev \
+    libmemcached-dev \
+    nginx
 
 
 # Install supervisor
 RUN apt-get install -y supervisor
+#RUN apt-get install  -y php8.2-intl
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN adduser www-data sudo
-RUN echo '%sudo ALL=(ALL) NOPASSWD:/usr/sbin/nginx' >> /etc/sudoers
-RUN touch /var/log/supervisord.log && touch /var/log/nginx/php-error.log 
-RUN touch /var/log/nginx/php-access.log && touch /var/log/nginx/error.log 
-RUN touch /var/log/nginx/access.log && chown www-data: -R /var/log/nginx/ 
-RUN chown www-data /var/log/supervisord.log  && chown www-data: /usr/local/sbin/php-fpm 
-RUN chown www-data: -R /usr/local/etc && touch /var/run/supervisord.pid && chown www-data: /var/run/supervisord.pid
-
+# Add user for laravel application
+RUN groupadd -g 1000 www
+RUN useradd -u 1000 -ms /bin/bash -g www www
 
 # Copy code to /var/www
-COPY  . /var/www
-RUN chown -R www-data:www-data /var/www
+COPY --chown=www:www-data . /var/www
+#RUN chown -R www-data:www-data /var/www
 
-RUN chmod -R 775 /var/www/storage
-RUN chmod -R   777  /var/www/storage/logs/
-
+# add root to www group
+RUN chmod -R 777 /var/www/storage
+RUN chmod -R 777 /var/www/storage/logs/
+RUN touch /var/www/storage/logs/laravel.log
+RUN chown -R www:www-data /var/www/storage/logs/laravel.log
+RUN chmod -R 777 /var/www/storage/logs/laravel.log
 
 # Copy nginx/php/supervisor configs
 RUN cp docker/supervisor.conf /etc/supervisord.conf
 RUN cp docker/php.ini /usr/local/etc/php/conf.d/app.ini
 RUN cp docker/nginx.conf /etc/nginx/sites-enabled/default
+#RUN cp docker/.htpasswd /etc/nginx/.htpasswd
+# RUN cp docker/hostss /etc/hosts
 
+# PHP Error Log Files
+RUN mkdir /var/log/php
+RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
+RUN mkdir /var/www/public/logs/
+RUN ln -s /var/www/storage/logs/laravel.log /var/www/public/logs/laravel.log
+RUN ln -s /var/log/nginx/schedule.log /var/www/public/logs/schedule.log
+#RUN rm composer.lock
+# Deployment steps ....i
+RUN composer require filament/filament --optimize-autoloader 
+RUN composer install --optimize-autoloader --no-dev
 
-# Deployment steps ....
-RUN rm composer.lock
-USER www-data
-
-RUN composer install 
-
-#RUN composer fund
+#RUN composer
 RUN chmod +x /var/www/docker/run.sh
-
-
 
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]

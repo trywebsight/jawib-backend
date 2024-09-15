@@ -14,6 +14,6 @@ Route::get('/', function () {
 
 
 ////////////////
-Route::get('/login', function () {
-    return redirect()->away(env("FRONTEND_URL") . "/login");
-})->middleware('guest')->name('login');
+// Route::get('/login', function () {
+//     return redirect()->away(env("FRONTEND_URL") . "/login");
+// })->middleware('guest')->name('login');

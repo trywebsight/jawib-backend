@@ -15,13 +15,11 @@ jobs:
         HOST: 167.99.242.135
         USER: root
       run: |
-        echo "$PRIVATE_KEY" > private_key 
+        echo "$PRIVATE_KEY" > private_key
         chmod 600 private_key
-         ssh -i private_key   -o StrictHostKeyChecking=no  $USER@$HOST  " 
-          cd /root/jawib-backend/  && git pull  && 
+         ssh -i private_key   -o StrictHostKeyChecking=no  $USER@$HOST  "
+          cd /root/jawib-backend/  && git pull  &&
           docker  buildx build -t    jawib-backend . &&
           docker rm -f jawib-backend
-          docker run -d -p 3000:80 --name=jawib-backend --restart=unless-stopped  jawib-backend
-          docker cp /root/jawib-backend/docker/FileUploadController.php  jawib-backend:/var/www/vendor/livewire/livewire/src/Features/SupportFileUploads
-          docker restart jawib-backend "
+          docker run -d -p 3000:80 --name=jawib-backend --restart=unless-stopped  jawib-backend "
 

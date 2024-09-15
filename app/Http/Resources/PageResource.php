@@ -4,9 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
-class PackageResource extends JsonResource
+class PageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,9 +17,7 @@ class PackageResource extends JsonResource
         return [
             'id'                => $this->id,
             'title'             => $this->title,
-            'gamesCount'        => $this->games_count,
-            'price'             => $this->price,
-            'image'             => Storage::disk('do')->url($this->image),
+            'slug'              => $this->slug,
             'content'           => $this->content,
         ];
     }

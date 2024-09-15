@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\PackagePaymentController;
+use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\QuestionFeedbackController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,7 @@ Route::apiResources(
     [
         'packages' => PackageController::class,
         'categories' => CategoryController::class,
+        'pages' => PageController::class,
     ],
     ['only' => ['index', 'show']]
 );

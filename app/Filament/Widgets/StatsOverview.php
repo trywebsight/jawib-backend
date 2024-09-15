@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\NoResource\Widgets;
+namespace App\Filament\Widgets;
 
 use App\Models\Category;
 use App\Models\Question;
@@ -11,7 +11,6 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends BaseWidget
 {
-
 
     protected function getStats(): array
     {

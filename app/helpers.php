@@ -24,15 +24,10 @@ if (!function_exists('clear_cache')) {
 if (!function_exists('settings')) {
     function settings($key, $else = null)
     {
-        return config("app.settings.{$key}", $else);
-
-        $cacheKey = 'setting-' . $key;
-        if (Cache::has($cacheKey)) {
-            return Cache::get($cacheKey);
-        }
-        $value = Setting::where('key', $key)->value('value');
-        Cache::forever($cacheKey, $value);
-        return $value ? $value : $else;
+        $settings = Cache::rememberForever('settings', function () {
+            return \App\Models\Setting::pluck('value', 'key')->toArray();
+        });
+        return $settings[$key] ?? $else;
     }
 }
 

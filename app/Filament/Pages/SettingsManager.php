@@ -7,6 +7,7 @@ use Filament\Forms;
 use Filament\Forms\Components;
 use App\Models\Setting;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Cache;
 
 class SettingsManager extends Page implements Forms\Contracts\HasForms
 {
@@ -43,12 +44,12 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
                     Components\Tabs\Tab::make('General')
                         ->schema([
                             Components\FileUpload::make('site_logo')
-                                ->label('Logo')
+                                ->label(__('logo'))
                                 ->image()
                                 ->directory('settings')
                                 ->disk('public'),
                             Components\FileUpload::make('site_favicon')
-                                ->label('Favicon')
+                                ->label(__('favicon'))
                                 ->image()
                                 ->directory('settings')
                                 ->disk('public'),
@@ -56,19 +57,19 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
                     Components\Tabs\Tab::make('Tap Payment')
                         ->schema([
                             Components\Toggle::make('test_mode')
-                                ->label('Test Mode'),
+                                ->label(__('test mode')),
                             Components\TextInput::make('secret_key')
-                                ->label('Secret Key')
+                                ->label(__('secret key'))
                                 ->columnSpanFull(),
                         ])->columns(2),
-                    Components\Tabs\Tab::make('Game Settings')
+                    Components\Tabs\Tab::make(__('Game Settings'))
                         ->schema([
                             Components\FileUpload::make('win_sound_effect')
-                                ->label('Win Sound Effect')
+                                ->label(__('win sound effect'))
                                 ->directory('settings')
                                 ->disk('public'),
                             Components\FileUpload::make('lose_sound_effect')
-                                ->label('Lose Sound Effect')
+                                ->label(__('lose sound effect'))
                                 ->directory('settings')
                                 ->disk('public'),
                         ])->columns(2),
@@ -86,6 +87,7 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
                 ['value' => $value]
             );
         }
+        Cache::forget('settings');
 
         Notification::make()
             ->title(__('success'))

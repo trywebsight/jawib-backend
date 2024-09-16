@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Widgets\StatsOverview;
+use App\Models\Setting;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -17,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -31,7 +33,8 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Sky,
             ])
-            ->brandLogo("https://trywebsight.com/frontend/nextxd/footerLogo.svg")
+            ->brandLogo($this->getLogoUrl())
+            ->favicon($this->getFaviconUrl())
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -59,5 +62,16 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 // \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
             ]);
+    }
+
+    protected function getLogoUrl()
+    {
+        $logo = settings('site_logo');
+        return $logo ? Storage::disk('public')->url($logo) : null;
+    }
+    protected function getFaviconUrl()
+    {
+        $favicon = settings('site_favicon');
+        return $favicon ? Storage::disk('public')->url($favicon) : null;
     }
 }

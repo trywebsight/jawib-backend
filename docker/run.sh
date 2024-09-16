@@ -2,8 +2,10 @@
 
 cd /var/www
 
-php artisan cache:clear
-php artisan config:clear
+# php artisan cache:clear
+# php artisan config:clear
+php artisan optimize:clear
+php artisan filament:optimize-clear
 php artisan storage:link
 
 chmod 777 /var/www/bootstrap/cache

@@ -73,15 +73,17 @@ class PackageResource extends Resource
                 Tables\Columns\TextColumn::make('price')->label(__('price'))
                     ->money('KWD')
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('image')->label(__('image'))
-                    ->disk('do'),
+                Tables\Columns\ImageColumn::make('image')
+                    ->disk('do')
+                    ->label(__('image')),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

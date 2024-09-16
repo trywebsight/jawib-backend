@@ -67,11 +67,11 @@ class AdminPanelProvider extends PanelProvider
     protected function getLogoUrl()
     {
         $logo = settings('site_logo');
-        return $logo ? Storage::disk('public')->url($logo) : null;
+        return $logo ? Storage::disk('do')->url($logo) : null;
     }
     protected function getFaviconUrl()
     {
         $favicon = settings('site_favicon');
-        return $favicon ? Storage::disk('public')->url($favicon) : null;
+        return $favicon ? Storage::disk('do')->url($favicon) : null;
     }
 }

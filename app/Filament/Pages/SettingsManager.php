@@ -47,12 +47,12 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
                                 ->label(__('logo'))
                                 ->image()
                                 ->directory('settings')
-                                ->disk('public'),
+                                ->disk('do'),
                             Components\FileUpload::make('site_favicon')
                                 ->label(__('favicon'))
                                 ->image()
                                 ->directory('settings')
-                                ->disk('public'),
+                                ->disk('do'),
                         ])->columns(2),
                     Components\Tabs\Tab::make('Tap Payment')
                         ->schema([
@@ -69,13 +69,13 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
                                 ->directory('settings')
                                 ->acceptedFileTypes(['audio/*'])
                                 ->maxSize(2048)
-                                ->disk('public'),
+                                ->disk('do'),
                             Components\FileUpload::make('lose_sound_effect')
                                 ->label(__('lose sound effect'))
                                 ->directory('settings')
                                 ->maxSize(2048)
                                 ->acceptedFileTypes(['audio/*'])
-                                ->disk('public'),
+                                ->disk('do'),
                         ])->columns(2),
                 ]),
         ];

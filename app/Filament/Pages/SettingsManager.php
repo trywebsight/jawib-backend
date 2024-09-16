@@ -67,10 +67,14 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
                             Components\FileUpload::make('win_sound_effect')
                                 ->label(__('win sound effect'))
                                 ->directory('settings')
+                                ->acceptedFileTypes(['audio/*'])
+                                ->maxSize(2048)
                                 ->disk('public'),
                             Components\FileUpload::make('lose_sound_effect')
                                 ->label(__('lose sound effect'))
                                 ->directory('settings')
+                                ->maxSize(2048)
+                                ->acceptedFileTypes(['audio/*'])
                                 ->disk('public'),
                         ])->columns(2),
                 ]),

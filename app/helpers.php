@@ -1,20 +1,10 @@
 <?php
 
-use App\Mail\BbdEmail;
-use App\Models\Booking;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Setting;
-use App\Models\Seo;
-use App\Models\Waitlist;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use Spatie\GoogleCalendar\Event;
+
 
 if (!function_exists('clear_cache')) {
     function clear_cache($key = null)
@@ -34,7 +24,7 @@ if (!function_exists('clear_cache')) {
 if (!function_exists('settings')) {
     function settings($key, $else = null)
     {
-        // return config("app.settings.{$key}", $else);
+        return config("app.settings.{$key}", $else);
 
         $cacheKey = 'setting-' . $key;
         if (Cache::has($cacheKey)) {

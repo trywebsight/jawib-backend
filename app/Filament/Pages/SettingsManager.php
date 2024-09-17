@@ -46,11 +46,13 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
                             Components\FileUpload::make('site_logo')
                                 ->label(__('logo'))
                                 ->image()
+                                ->imageEditor()
                                 ->directory('settings')
                                 ->disk('do'),
                             Components\FileUpload::make('site_favicon')
                                 ->label(__('favicon'))
                                 ->image()
+                                ->imageEditor()
                                 ->directory('settings')
                                 ->disk('do'),
                         ])->columns(2),

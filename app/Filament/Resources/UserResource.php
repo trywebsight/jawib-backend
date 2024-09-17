@@ -9,8 +9,9 @@ use App\Filament\Resources\UserResource\RelationManagers\TransactionsRelationMan
 use App\Jobs\UserGetCreditJob;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -37,17 +38,56 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                // name Field
                 TextInput::make('name')->label(__('name'))->autofocus()->required(),
+                // email Field
                 TextInput::make('email')->label(__('email'))->email()->nullable(),
+                // phone Field
                 TextInput::make('phone')->label(__('phone'))->numeric()->required(),
-                // Forms\Components\TextInput::make('credits')
-                //     ->numeric()
-                //     ->required(),
+                // Username Field
+                TextInput::make('username')
+                    ->label(__('username'))
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->rules(['required', 'string', 'max:255']),
+                // Date of Birth Field
+                DatePicker::make('bod')
+                    ->label(__('date of birth'))
+                    ->nullable(),
+                // Gender Field
+                Radio::make('gender')
+                    ->label(__('Gender'))
+                    ->inline()
+                    ->inlineLabel(false)
+                    ->options([
+                        'male' => __('Male'),
+                        'female' => __('Female'),
+                    ])
+                    ->required(),
+                // Country Field
+                Select::make('country')
+                    ->label(__('country'))
+                    ->options([
+                        'Kuwait' => __('kuwait'),
+                        'Saudi Arabia' => __('saudi arabia'),
+                        'United Arab Emirates' => __('united arab emirates'),
+                        'Qatar' => __('qatar'),
+                        'Oman' => __('oman'),
+                        'Bahrain' => __('bahrain'),
+                    ])
+                    ->required(),
+                // Points Field
+                TextInput::make('points')
+                    ->label(__('points'))
+                    ->numeric()
+                    ->default(0)
+                    ->required(),
+                // Password
                 TextInput::make('password')->label(__('password'))->password()->revealable()
                     ->dehydrateStateUsing(fn($state) => bcrypt($state))
                     ->dehydrated(fn($state) => filled($state))
                     ->required(fn(string $context): bool => $context === 'create'),
-
+                // Is Active
                 Toggle::make('is_active')->label(__('is active'))->default(1),
             ]);
     }
@@ -57,8 +97,16 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->label(__('name')),
+                TextColumn::make('username')->label(__('username')),
                 TextColumn::make('email')->label(__('email')),
                 TextColumn::make('phone')->label(__('phone')),
+                TextColumn::make('country')->label(__('country')),
+                TextColumn::make('rank')
+                    ->label(__('level'))
+                    ->sortable()
+                    ->badge()
+                    ->getStateUsing(fn($record) => "{$record->rank} - ({$record->points})")
+                    ->color('primary'),
                 TextColumn::make('balance')->label(__('game credits'))
                     ->badge()
                     ->color('success'),

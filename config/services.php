@@ -37,6 +37,31 @@ return [
 
     'tap' => [
         'api_key' => env('TAP_SECRET_KEY', 'sk_test_XKokBfNWv6FIYuTMg5sLPjhJ')
-    ]
+    ],
+
+    'onesignal' => [
+        'app_id' => env('ONESIGNAL_APP_ID'),
+        'rest_api_key' => env('ONESIGNAL_REST_API_KEY'),
+        'user_auth_key' => env('ONESIGNAL_USER_AUTH_KEY'),
+    ],
+
+    'kwt_sms' => [
+        'username' => env('KWT_SMS_USERNAME'),
+        'password' => env('KWT_SMS_PASSWORD'),
+        'senderName' => env('KWT_SMS_SENDER'),
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URL'),
+    ],
+
+    'apple' => [
+        'client_id' => env('APPLE_CLIENT_ID'),
+        'client_secret' => env('APPLE_CLIENT_SECRET'),
+        'redirect' => env('APPLE_REDIRECT_URL'),
+    ],
+
 
 ];

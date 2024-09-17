@@ -1,50 +1,50 @@
 <?php
 
-namespace App\Services\API;
+namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Modules\Waitlist\Jobs\SendPushJob;
 
 class OneSignalService
 {
     const API_URL = "https://onesignal.com/api/v1";
     const ENDPOINT_NOTIFICATIONS = "/notifications";
 
-    protected static $appId;
-    protected static $restApiKey;
-    protected static $additionalParams = [];
+    protected $appId;
+    protected $restApiKey;
+    protected $additionalParams;
 
-    /**
-     * Load the configuration and initialize appId and restApiKey.
-     */
-    protected static function init()
+    public function __construct()
     {
         $config = config('onesignal');
-        self::$appId = $config['app_id'];
-        self::$restApiKey = $config['rest_api_key'];
+
+        $this->appId = $config['app_id'];
+        $this->restApiKey = $config['rest_api_key'];
+        $this->additionalParams = [];
     }
 
-    private static function setHeaders()
+    private function setHeaders()
     {
         return [
-            'Authorization' => 'Basic ' . self::$restApiKey,
+            'Authorization' => 'Basic ' . $this->restApiKey,
             'Content-Type' => 'application/json'
         ];
     }
 
-    public static function addParams($keyOrArray, $value = null)
+    public function addParams($keyOrArray, $value = null)
     {
         if (is_array($keyOrArray)) {
-            self::$additionalParams = array_merge(self::$additionalParams, $keyOrArray);
+            $this->additionalParams = array_merge($this->additionalParams, $keyOrArray);
         } else {
-            self::$additionalParams[$keyOrArray] = $value;
+            $this->additionalParams[$keyOrArray] = $value;
         }
+        return $this;
     }
 
-    private static function pushParams($params = [], $title, $message, $imageUrl = null, $url = null)
+    private function pushParams($params = [], $title, $message, $imageUrl = null, $url = null)
     {
         return array_filter(array_merge([
-            'app_id' => self::$appId,
+            'app_id' => $this->appId,
             'headings' => ['en' => $title],
             'contents' => ['en' => $message],
             'big_picture' => $imageUrl,
@@ -53,131 +53,98 @@ class OneSignalService
         ], $params));
     }
 
-    public static function sendPushByUserId($userId, $title, $message, $imageUrl = null, $url = null)
+    public function sendPushByUserId($userId, $title, $message, $imageUrl = null, $url = null)
     {
-        self::init(); // Ensure initialization
-        $params = [
+        $params =             [
             'filters' => [["field" => "tag", "key" => 'user_id', "relation" => "=", "value" => $userId]],
         ];
-        $params = self::pushParams(
+        $params = $this->pushParams(
             $params,
             $title,
             $message,
             $imageUrl,
             $url
         );
-        return self::sendPush($params);
+        return $this->sendPush($params);
     }
 
-    // TODO remove comment after app integration
-    public static function sendPushByUserIds(array $userIds, $title, $message, $imageUrl = null, $url = null)
+    public function sendPushByEmail($email, $title, $message, $imageUrl = null, $url = null)
     {
-        self::init(); // Ensure initialization
-        $fields = [];
-        foreach($userIds as $uid){
-            $fields[] = [["field" => "tag", "key" => 'user_id', "relation" => "=", "value" => $uid]];
-        }
-
-        $params = [
-            'filters' => [$fields],
-        ];
-        $params = self::pushParams(
-            $params,
-            $title,
-            $message,
-            $imageUrl,
-            $url
-        );
-        return self::sendPush($params);
-    }
-    public static function sendPushByEmail($email, $title, $message, $imageUrl = null, $url = null)
-    {
-        self::init();
-        $params = [
+        $params =             [
             'filters' => [["field" => "tag", "key" => 'user_email', "relation" => "=", "value" => $email]],
         ];
-        $params = self::pushParams(
+        $params = $this->pushParams(
             $params,
             $title,
             $message,
             $imageUrl,
             $url
         );
-        return self::sendPush($params);
+        return $this->sendPush($params);
     }
 
-    // TODO remove comment after app integration
-    public static function sendPushByPhone($phone, $title, $message, $imageUrl = null, $url = null)
+    public function sendPushByPhone($phone, $title, $message, $imageUrl = null, $url = null)
     {
-        return true; //
-
-
-
-        self::init();
-        $params = [
+        $params =             [
             'filters' => [["field" => "tag", "key" => 'user_phone', "relation" => "=", "value" => $phone]],
         ];
-        $params = self::pushParams(
+        $params = $this->pushParams(
             $params,
             $title,
             $message,
             $imageUrl,
             $url
         );
-        return self::sendPush($params);
+        return $this->sendPush($params);
     }
 
-    public static function sendPushUsingTags($tags = [], $title, $message, $imageUrl = null, $url = null)
+    public function sendPushUsingTags($tags = [], $title, $message, $imageUrl = null, $url = null)
     {
-        self::init();
         $filters = [];
         foreach ($tags as $key => $value) {
             $filters[] = ["field" => "tag", "key" => $key, "relation" => "=", "value" => $value];
         }
-        $params = self::pushParams(['filters' => $filters], $title, $message, $imageUrl, $url);
-        return self::sendPush($params);
+        $params = $this->pushParams(['filters' => $filters], $title, $message, $imageUrl, $url);
+        $this->sendPush($params);
     }
 
-    public static function sendPushToAll($title, $message, $imageUrl = null, $url = null)
+    public function sendPushToAll($title, $message, $imageUrl = null, $url = null)
     {
-        self::init();
         $params = ['included_segments' => ['All']];
-        $push = self::pushParams($params, $title, $message, $imageUrl, $url);
-        return self::sendPush($push);
+        $push = $this->pushParams($params, $title, $message, $imageUrl, $url);
+
+        $this->sendPush($push);
     }
 
-    public static function sendPushToSegment($segment, $title, $message, $imageUrl = null, $url = null)
+    public function sendPushToSegment($segment, $title, $message, $imageUrl = null, $url = null)
     {
-        self::init();
-        $params = self::pushParams(['included_segments' => [$segment]], $title, $message, $imageUrl, $url);
-        return self::sendPush($params);
+        $params = $this->pushParams(['included_segments' => [$segment]], $title, $message, $imageUrl, $url);
+        $this->sendPush($params);
     }
 
-    private static function sendPush(array $parameters)
+    private function sendPush(array $parameters)
     {
-        return self::sendPushRequest($parameters);
+        $this->sendPushRequest($parameters);
     }
-
-    public static function sendPushRequest(array $parameters)
+    public function sendPushRequest(array $parameters)
     {
         try {
-            self::init();
-            $parameters['app_id'] = $parameters['app_id'] ?? self::$appId;
+            $parameters['app_id'] = $parameters['app_id'] ?? $this->appId;
             $parameters['priority'] = $parameters['priority'] ?? 10;
-            $parameters = array_merge($parameters, self::$additionalParams);
+            $parameters = array_merge($parameters, $this->additionalParams);
 
-            $response = Http::retry(3, 200)->withHeaders(self::setHeaders())
+            $response = Http::retry(3, 200)->withHeaders($this->setHeaders())
                 ->post(self::API_URL . self::ENDPOINT_NOTIFICATIONS, $parameters);
             return $response->json();
         } catch (\Throwable $th) {
-            Log::debug($th->getMessage());
+            logger('OneSignalService.php:137: ' . $th->getMessage());
         }
     }
 
-    public static function getNotifications($limit = null, $offset = null)
+    //
+    public function getNotifications($limit = null, $offset = null)
     {
-        self::init();
-        $endpoint = self::ENDPOINT_NOTIFICATIONS . '?app_id=' . self::$appId;
+        $endpoint = self::ENDPOINT_NOTIFICATIONS . '?app_id=' . $this->appId;
 
         if ($limit) {
             $endpoint .= "&limit=" . $limit;
@@ -187,26 +154,22 @@ class OneSignalService
             $endpoint .= "&offset=" . $offset;
         }
 
-        $response = Http::withHeaders(self::setHeaders())
+        $response = Http::withHeaders($this->setHeaders())
             ->get(self::API_URL . $endpoint);
 
         return $response->json();
     }
-
-    public static function getNotification($notification_id)
+    public function getNotification($notification_id)
     {
-        self::init();
-        $response = Http::withHeaders(self::setHeaders())
-            ->get(self::API_URL . self::ENDPOINT_NOTIFICATIONS . '/' . $notification_id . '?app_id=' . self::$appId);
+        $response = Http::withHeaders($this->setHeaders())
+            ->get(self::API_URL . self::ENDPOINT_NOTIFICATIONS . '/' . $notification_id . '?app_id=' . $this->appId);
 
         return $response->json();
     }
-
-    public static function deletePush($notificationId)
+    public function deletePush($notificationId)
     {
-        self::init();
-        $response = Http::withHeaders(self::setHeaders())
-            ->delete(self::API_URL . self::ENDPOINT_NOTIFICATIONS . "/$notificationId?app_id=" . self::$appId);
+        $response = Http::withHeaders($this->setHeaders())
+            ->delete(self::API_URL . self::ENDPOINT_NOTIFICATIONS . "/$notificationId?app_id={$this->appId}");
 
         return $response->json();
     }

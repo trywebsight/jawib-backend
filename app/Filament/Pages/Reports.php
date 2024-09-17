@@ -6,6 +6,7 @@ use Filament\Pages\Page;
 use App\Filament\Widgets\AudienceAnalyticsWidget;
 use App\Filament\Widgets\GameAnalyticsWidget;
 use App\Filament\Widgets\CustomReportsWidget;
+use App\Filament\Widgets\StatsOverview;
 
 class Reports extends Page
 {
@@ -23,6 +24,7 @@ class Reports extends Page
     protected function getHeaderWidgets(): array
     {
         return [
+            StatsOverview::class,
             AudienceAnalyticsWidget::class,
             GameAnalyticsWidget::class,
         ];

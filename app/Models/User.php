@@ -17,7 +17,8 @@ class User extends Authenticatable implements Wallet, Customer
 {
     use HasFactory, HasApiTokens, HasWallet, CanPay;
 
-    protected $fillable = ['name', 'email', 'country_code', 'phone', 'avatar', 'user_type', 'password', 'game_credits'];
+    // protected $fillable = ['name', 'email', 'country_code', 'phone', 'avatar', 'user_type', 'password', 'game_credits'];
+    protected $guarded = [];
 
     protected $hidden = ['password', 'remember_token', 'created_at', 'updated_at'];
 
@@ -38,4 +39,28 @@ class User extends Authenticatable implements Wallet, Customer
         return $this->hasMany(Purchase::class);
     }
 
+    public function getRankAttribute()
+    {
+        switch ($this->points) {
+            case $this->points < 10:
+                $rank = __('noobie');
+                break;
+            case $this->points < 20:
+                $rank = __('junior');
+                break;
+            case $this->points < 30:
+                $rank = __('mid-senior');
+                break;
+            case $this->points < 40:
+                $rank = __('senior');
+                break;
+            case $this->points < 50:
+                $rank = __('senior');
+                break;
+            default:
+                $rank = __('Ninja');
+                break;
+        }
+        return $rank;
+    }
 }

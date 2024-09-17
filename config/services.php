@@ -46,9 +46,9 @@ return [
     ],
 
     'kwt_sms' => [
-        'username' => env('KWT_SMS_USERNAME'),
-        'password' => env('KWT_SMS_PASSWORD'),
-        'senderName' => env('KWT_SMS_SENDER'),
+        'username' => env('KWT_SMS_USERNAME', 'halsaffar'),
+        'password' => env('KWT_SMS_PASSWORD', 'Hussain97:*'),
+        'senderName' => env('KWT_SMS_SENDER', 'Jawib'),
     ],
 
     'google' => [

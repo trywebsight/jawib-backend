@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 
 if (!function_exists('clear_cache')) {
@@ -62,36 +64,26 @@ if (!function_exists('formated_price')) {
     }
 }
 
-// whatsapp
-if (!function_exists('waz_send')) {
-    function waz_send($msg, $to, $media_url = null)
+if (!function_exists('email_to_username')) {
+    function email_to_username($email)
     {
-        $waz_api = settings('WA_URL', env('WA_URL'));
-        $waz_token = settings('WA_ACCESS_TOKEN', env('WA_ACCESS_TOKEN'));
-        $waz_id = settings('WA_INSTANCE_ID', env('WA_INSTANCE_ID'));
-        $msg = urlencode($msg);
+        // Extract the part before '@' from the email
+        $baseUsername = Str::before($email, '@');
+        // Sanitize the username (remove unwanted characters)
+        $baseUsername = preg_replace('/[^a-zA-Z0-9_]/', '', $baseUsername);
+        $username = $baseUsername;
+        // Check if the username is unique
+        $isUnique = !DB::table('users')->where('username', $username)->exists();
+        if ($isUnique) {
+            return $username;
+        } else {
+            // Append random digits until a unique username is found
+            do {
+                $randomNumber = rand(1000, 9999);
+                $username = $baseUsername . '_' . $randomNumber;
+            } while (DB::table('users')->where('username', $username)->exists());
 
-        // remove any special characters
-        if (strlen($to) == 8 && substr($to, 0, 3) !== '965') {
-            $to = "965$to";
-        }
-        $to = preg_replace('/\D/', '', $to) . "@c.us";
-
-
-        // send with image or not
-        $url = $media_url
-            ? "$waz_api/api/send?number=$to&type=media&message=$msg&media_url=$media_url&instance_id=$waz_id&access_token=$waz_token&filename=image.png"
-            : "$waz_api/api/send?number=$to&type=text&message=$msg&instance_id=$waz_id&access_token=$waz_token";
-        try {
-            $res = Http::get($url);
-            $body = $res->json();
-            if (isset($body['message'])) {
-                return true;
-            }
-            return false;
-        } catch (\Throwable $th) {
-            return $th->getMessage();
-            return false;
+            return $username;
         }
     }
 }

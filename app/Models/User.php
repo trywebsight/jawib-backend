@@ -19,13 +19,12 @@ class User extends Authenticatable implements Wallet, Customer
 
     // protected $fillable = ['name', 'email', 'country_code', 'phone', 'avatar', 'user_type', 'password', 'game_credits'];
     protected $guarded = [];
-
-    protected $hidden = ['password', 'remember_token', 'created_at', 'updated_at'];
+    protected $hidden = ['password', 'remember_token', 'created_at', 'updated_at', 'email_verified_at', 'social_id', 'social_provider'];
 
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            'phone_verified' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -41,26 +40,35 @@ class User extends Authenticatable implements Wallet, Customer
 
     public function getRankAttribute()
     {
-        switch ($this->points) {
-            case $this->points < 10:
-                $rank = __('noobie');
-                break;
-            case $this->points < 20:
-                $rank = __('junior');
-                break;
-            case $this->points < 30:
-                $rank = __('mid-senior');
-                break;
-            case $this->points < 40:
-                $rank = __('senior');
-                break;
-            case $this->points < 50:
-                $rank = __('senior');
-                break;
-            default:
-                $rank = __('Ninja');
-                break;
+        $points = $this->points;
+        $ranks = [
+            50 => 'master',
+            40 => 'ninja',
+            30 => 'senior',
+            20 => 'mid-senior',
+            10 => 'junior',
+            0  => 'noobie',
+        ];
+
+        foreach ($ranks as $p => $rank) {
+            if ($points >= $p) {
+                return __($rank);
+            }
         }
-        return $rank;
+    }
+
+    public function phone_number()
+    {
+        $country_code = ltrim($this->country_code, '+');
+        if (substr($country_code, 0, 2) === '00') {
+            $country_code = substr($country_code, 2);
+        }
+
+        $phone = $this->phone;
+        if (substr($phone, 0, 1) === '0') {
+            $phone = substr($phone, 1);
+        }
+
+        return $country_code . $phone;
     }
 }

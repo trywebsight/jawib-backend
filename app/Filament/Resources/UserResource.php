@@ -18,7 +18,9 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 
 class UserResource extends Resource
@@ -86,9 +88,12 @@ class UserResource extends Resource
                 TextInput::make('password')->label(__('password'))->password()->revealable()
                     ->dehydrateStateUsing(fn($state) => bcrypt($state))
                     ->dehydrated(fn($state) => filled($state))
+                    ->columnSpanFull()
                     ->required(fn(string $context): bool => $context === 'create'),
-                // Is Active
-                Toggle::make('is_active')->label(__('is active'))->default(1),
+                // Phone Verification Toggle
+                Toggle::make('phone_verified')
+                    ->label(__('phone verified'))
+                    ->default(true),
             ]);
     }
 
@@ -101,6 +106,13 @@ class UserResource extends Resource
                 TextColumn::make('email')->label(__('email')),
                 TextColumn::make('phone')->label(__('phone')),
                 TextColumn::make('country')->label(__('country')),
+                IconColumn::make('phone_verified')
+                    ->label(__('verified'))
+                    ->boolean()
+                    ->trueIcon('heroicon-s-check-circle')
+                    ->falseIcon('heroicon-s-x-circle')
+                    ->trueColor('success')
+                    ->falseColor('danger'),
                 TextColumn::make('rank')
                     ->label(__('level'))
                     ->sortable()
@@ -115,9 +127,8 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
                 Tables\Actions\Action::make('send_credit_to_user')
                     ->label('add credit')
                     ->icon('heroicon-o-currency-dollar')
@@ -133,8 +144,7 @@ class UserResource extends Resource
                             ->placeholder('5'),
                     ])
                     ->action(function (array $data, $record) {
-                        // $user = User::find($record->id); // Find the user by record ID
-                        $user = $record; // Find the user by record ID
+                        $user = $record;
 
                         $user->deposit($data['amount'], ['description' => 'credit added by admin']);
 
@@ -145,11 +155,11 @@ class UserResource extends Resource
                             ->success()
                             ->send();
                     }),
+                Tables\Actions\DeleteAction::make(),
 
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

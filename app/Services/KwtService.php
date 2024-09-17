@@ -8,7 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
 
-class KwtsmsService
+class KwtService
 {
     protected $baseUrl;
     protected $username;
@@ -60,8 +60,9 @@ class KwtsmsService
         ];
 
         try {
-            $this->sendRequest($url, $params);
+            return $this->sendRequest($url, $params);
         } catch (Exception $e) {
+            Log::debug("KwtService, error sending otp: {$e->getMessage()}");
             throw new Exception('Failed to send SMS: ' . $e->getMessage());
         }
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AccountController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
+use App\Http\Controllers\Api\Auth\SocialAuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\PackageController;
@@ -11,16 +12,26 @@ use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\QuestionFeedbackController;
 use Illuminate\Support\Facades\Route;
 
-// auth routes
-Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/login',    [AuthController::class, 'login']);
-Route::post('/auth/logout', [AuthController::class, 'logout']);
-// get user data route
-Route::get('/auth/user', [AccountController::class, 'user'])->middleware('auth:sanctum');
-// forgot password
-Route::post('/auth/forgot-password', [ForgotPasswordController::class, 'sendOTP']);
-Route::post('/auth/verify-otp', [ForgotPasswordController::class, 'verifyOTP']);
-Route::post('/auth/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+
+Route::group(['prefix' => 'auth'], function () {
+    // auth
+    Route::post('/login',    [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/logout',   [AuthController::class, 'logout']);
+    // phone verification
+    Route::post('/verify-phone', [AuthController::class, 'verifyPhone']);
+    Route::post('/resend-otp',   [AuthController::class, 'resendOtp']);
+    // reset password
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendOTP']);
+    Route::post('/verify-otp',      [ForgotPasswordController::class, 'verifyOTP']);
+    Route::post('/reset-password',  [ForgotPasswordController::class, 'resetPassword']);
+    // Social login
+    Route::get('/social/{provider}/login',      [SocialAuthController::class, 'redirect']);
+    Route::get('/social/{provider}/callback',   [SocialAuthController::class, 'callback']);
+    // user data
+    Route::get('/user', [AccountController::class, 'user']);
+    Route::put('/user', [AccountController::class, 'updateAccount']);
+});
 
 // Site resource APIs
 Route::apiResources(

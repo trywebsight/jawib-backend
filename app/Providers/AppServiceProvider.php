@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Admin;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,7 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // for filament Import
+        $this->app->bind(Authenticatable::class, Admin::class);
     }
 
     /**

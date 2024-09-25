@@ -59,6 +59,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->authGuard('admin')
+            ->databaseNotifications()
             ->plugins([
                 // \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
             ]);

@@ -159,8 +159,7 @@ class UserResource extends Resource
 
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                ]),
+                Tables\Actions\BulkActionGroup::make([]),
             ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\CouponTypeEnum;
 use App\Filament\Resources\CouponResource\Pages;
 use App\Models\Coupon;
 use Filament\Forms;
@@ -44,22 +45,51 @@ class CouponResource extends Resource
                             })
                     ),
                 Forms\Components\TextInput::make('max_uses_per_user')
-                    ->label(__('max uses per user'))
+                    ->label(__('max uses / per user'))
                     ->numeric()
                     ->minValue(1)
                     ->default(1)
                     ->required(),
-                Forms\Components\TextInput::make('max_users')
-                    ->label(__('max users'))
+                Forms\Components\TextInput::make('max_uses')
+                    ->label(__('total max uses'))
                     ->numeric()
                     ->minValue(1)
                     ->nullable()
-                    ->helperText(__('leave empty for unlimited users')),
+                    ->helperText(__('leave empty for unlimited uses')),
+
+                Forms\Components\ToggleButtons::make('discount_type')
+                    ->label(__('discount type'))
+                    ->inline()
+                    ->inlineLabel(false)
+                    ->options(CouponTypeEnum::class)
+                    ->enum(CouponTypeEnum::class)
+                    ->icons([
+                        'fixed' => 'heroicon-s-currency-dollar',
+                        'percent' => 'heroicon-c-percent-badge',
+                    ])
+                    ->live()
+                    ->afterStateUpdated(fn(Set $set) => $set('discount_value', null))
+                    ->required(),
+
+                Forms\Components\TextInput::make('discount_value')
+                    ->label(__('discount value'))
+                    ->required()
+                    ->numeric()
+                    ->minValue(0)
+                    ->step(0.01)
+                    ->prefix(function (Forms\Get $get) {
+                        return $get('discount_type') === 'fixed' ? 'KWD' : '';
+                    })
+                    ->suffix(function (Forms\Get $get) {
+                        return $get('discount_type') === 'percent' ? '%' : '';
+                    })
+                    ->maxValue(fn(Forms\Get $get) => $get('discount_type') === 'percent' ? 100 : null),
                 Forms\Components\DateTimePicker::make('expires_at')
                     ->label(__('expiration date'))
                     ->nullable()
                     ->helperText(__('leave empty for no expiration')),
-            ]);
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -69,21 +99,36 @@ class CouponResource extends Resource
                 Tables\Columns\TextColumn::make('code')
                     ->label(__('coupon code'))
                     ->searchable()
+                    ->copyable()
+                    ->copyMessage('Coupon copied')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('discount_value')
+                    ->label(__('discount value'))
+                    ->sortable()
+                    ->formatStateUsing(
+                        fn($state, $record) =>
+                        $record->discount_type === 'percent' ? "{$state}%" : "KWD ${state}"
+                    ),
                 Tables\Columns\TextColumn::make('max_uses_per_user')
                     ->label(__('max uses/user'))
+                    ->toggleable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('max_users')
+                Tables\Columns\TextColumn::make('max_uses')
                     ->label(__('max users'))
                     ->sortable()
+                    ->toggleable()
                     ->default(__('unlimited'))
                     ->formatStateUsing(fn($state) => $state ?? __('unlimited')),
-                Tables\Columns\TextColumn::make('total_uses')
+                    Tables\Columns\TextColumn::make('total_uses')
                     ->label(__('total uses'))
-                    ->sortable(),
+                    ->toggleable()
+                    ->default(0)
+                    ->sortable()
+                    ->formatStateUsing(fn($state) => $state ?? 0),
                 Tables\Columns\TextColumn::make('expires_at')
                     ->label(__('expires at'))
                     ->sortable()
+                    ->toggleable()
                     ->dateTime('M d, Y'),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()

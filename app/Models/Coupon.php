@@ -24,4 +24,16 @@ class Coupon extends Model
             ->withTimestamps();
     }
 
+    public function isActive(): bool
+    {
+        // Check if the coupon has expired
+        if ($this->expires_at && $this->expires_at->isPast()) {
+            return false;
+        }
+        // Check if the maximum number of users has been reached
+        if ($this->max_users && $this->total_uses >= $this->max_users) {
+            return false;
+        }
+        return true;
+    }
 }

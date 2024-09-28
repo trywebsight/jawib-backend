@@ -47,6 +47,26 @@ class CouponService
         return true;
     }
 
+    public function calculateDiscount($coupon, $amount)
+    {
+        $discount = 0.0;
+        if ($coupon->discount_type == CouponTypeEnum::FIXED->value) {
+            $discount = $this->calculateFixedDiscount($coupon, $amount);
+        } elseif ($coupon->discount_type == CouponTypeEnum::PERCENT->value) {
+            $discount = $this->calculatePercentageDiscount($coupon, $amount);
+        }
+        return $discount;
+    }
+
+    protected function calculatePercentageDiscount($coupon, $amount)
+    {
+        return $amount * ($coupon->discount_value / 100);
+    }
+
+    protected function calculateFixedDiscount($coupon, $amount)
+    {
+        return min($coupon->discount_value, $amount);
+    }
 
     public function incrementUsedTimes(string $couponCode): bool
     {
@@ -60,37 +80,15 @@ class CouponService
         return false;
     }
 
-    public function decrementUsedTimes(string $couponCode): bool
+    public function incrementUserCouponUsage($coupon, $user)
     {
-        $coupon = Coupon::where('code', $couponCode)->first();
-        if ($coupon) {
-            $coupon->decrement('used_times');
-            return true;
-        }
-        return false;
-    }
+        $usage = $coupon->users()->where('user_id', $user->id)->first();
 
-    public function calculateDiscount($coupon, $package)
-    {
-        $discount = 0.0;
-        if ($coupon->discount_type == CouponTypeEnum::FIXED) {
-            $discount = $this->calculateFixedDiscount($coupon, $package);
-        } elseif ($coupon->discount_type == CouponTypeEnum::PERCENT) {
-            $discount = $this->calculatePercentageDiscount($coupon, $package);
+        if ($usage) {
+            $currentUses = $usage->pivot->uses;
+            $coupon->users()->updateExistingPivot($user->id, ['uses' => $currentUses + 1]);
+        } else {
+            $coupon->users()->attach($user->id, ['uses' => 1]);
         }
-        return $discount;
-    }
-
-    protected function calculatePercentageDiscount($coupon, $package)
-    {
-        return $package->price * ($coupon->discount_value / 100);
-    }
-
-    protected function calculateFixedDiscount($coupon, $package)
-    {
-        if ($coupon->discount_value >= $package->price) {
-            return $package->price;
-        }
-        return $package->price - $coupon->discount_value;
     }
 }

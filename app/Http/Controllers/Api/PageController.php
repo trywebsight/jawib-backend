@@ -11,11 +11,11 @@ class PageController extends Controller
 {
     public function index()
     {
-        return $this->success(PageResource::collection(Page::where('is_published', true)->get()));
+        return $this->success(PageResource::collection(Page::active()->get()));
     }
     public function show($id)
     {
-        $page = Page::where('is_published', true)->where('slug', $id)->first();
+        $page = Page::active()->where('slug', $id)->first();
         if (!$page) {
             return $this->error([], __("page not found"), 404);
         }

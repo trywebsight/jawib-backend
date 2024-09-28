@@ -2,18 +2,18 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\TapPaymentStatusEnum;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Enums\TapStatusEnum;
 use App\Models\Purchase;
 
 class AudienceAnalyticsWidget extends BaseWidget
 {
     private function totalEarning()
     {
-        $total = Purchase::where('payment_status', TapStatusEnum::CAPTURED)
+        $total = Purchase::where('payment_status', TapPaymentStatusEnum::CAPTURED->value)
             ->join('packages', 'purchases.package_id', '=', 'packages.id')
             ->sum('packages.price');
 
@@ -29,7 +29,7 @@ class AudienceAnalyticsWidget extends BaseWidget
             DB::raw('SUM(packages.price) as total')
         )
             ->join('packages', 'purchases.package_id', '=', 'packages.id')
-            ->where('payment_status', TapStatusEnum::CAPTURED)
+            ->where('payment_status', TapPaymentStatusEnum::CAPTURED->value)
             ->groupBy('date')
             ->orderBy('date')
             ->limit(7)

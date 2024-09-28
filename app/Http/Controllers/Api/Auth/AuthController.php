@@ -112,6 +112,28 @@ class AuthController extends Controller
         ], __('phone number verified successfully'));
     }
 
+    // SEND OTP
+    private function sendOtp($user, $otp = null)
+    {
+        $otp = $otp ?? mt_rand(1000, 9999);
+        $phoneNumber = $user->phone_number();
+        // Save OTP in user_otps table
+        UserOtp::updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'otp'        => $otp,
+                'expires_at' => now()->addMinutes(5),
+            ]
+        );
+        try {
+            (new KwtService)->sendSms($phoneNumber, "Your verification code is: $otp");
+        } catch (Exception $e) {
+            Log::debug("error sending otp: {$e->getMessage()}");
+            return false;
+        }
+        return true;
+    }
+
     // RESEND OTP
     public function resendOtp(Request $request)
     {
@@ -133,27 +155,5 @@ class AuthController extends Controller
 
         // Return success response
         return $this->success(null, __('verification code has been resent'));
-    }
-
-    // SEND OTP
-    private function sendOtp($user, $otp = null)
-    {
-        $otp = $otp ?? mt_rand(1000, 9999);
-        $phoneNumber = $user->phone_number();
-        // Save OTP in user_otps table
-        UserOtp::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'otp'        => $otp,
-                'expires_at' => now()->addMinutes(5),
-            ]
-        );
-        try {
-            (new KwtService)->sendSms($phoneNumber, "Your verification code is: $otp");
-        } catch (Exception $e) {
-            Log::debug("error sending otp: {$e->getMessage()}");
-            return false;
-        }
-        return true;
     }
 }

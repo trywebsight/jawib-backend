@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 
-class TapPayment
+class TapPaymentService
 {
 
     const BASE_URL = "https://api.tap.company/v2/";

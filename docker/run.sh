@@ -7,6 +7,10 @@ cd /var/www
 php artisan optimize:clear
 php artisan filament:optimize-clear
 php artisan storage:link
+php artisan package:discover --ansi
+php artisan filament:upgrade
+php artisan vendor:publish --tag=laravel-assets --ansi --force
+
 
 chmod 777 /var/www/bootstrap/cache
 php artisan queue:work &

@@ -69,9 +69,7 @@ RUN cp docker/nginx.conf /etc/nginx/sites-enabled/default
 # PHP Error Log Files
 RUN mkdir /var/log/php
 RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
-RUN mkdir /var/www/public/logs/
-RUN ln -s /var/www/storage/logs/laravel.log /var/www/public/logs/laravel.log
-RUN ln -s /var/log/nginx/schedule.log /var/www/public/logs/schedule.log
+#RUN ln -s /var/log/nginx/schedule.log /var/www/public/logs/schedule.log
 #RUN rm composer.lock
 # Deployment steps ....i
 RUN composer require filament/filament --optimize-autoloader 

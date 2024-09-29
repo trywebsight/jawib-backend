@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers\GamesRelationManager;
-use App\Filament\Resources\UserResource\RelationManagers\PurchasesRelationManager;
 use App\Filament\Resources\UserResource\RelationManagers\TransactionsRelationManager;
 use App\Jobs\UserGetCreditJob;
 use App\Models\User;
@@ -166,7 +165,6 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            PurchasesRelationManager::class,
             GamesRelationManager::class,
             TransactionsRelationManager::class,
         ];

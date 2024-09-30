@@ -3,38 +3,38 @@
 namespace App\Filament\Widgets;
 
 use App\Enums\TapPaymentStatusEnum;
+use App\Models\Game;
+use App\Models\Order;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Purchase;
+use App\Models\User;
 
 class AudienceAnalyticsWidget extends BaseWidget
 {
     private function totalEarning()
     {
-        $total = Purchase::where('payment_status', TapPaymentStatusEnum::CAPTURED->value)
-            ->join('packages', 'purchases.package_id', '=', 'packages.id')
-            ->sum('packages.price');
+        $total = Order::where('payment_status', TapPaymentStatusEnum::CAPTURED->value)
+            ->sum('total');
 
-        // Assuming you have a method or a config value to get the currency symbol
-
-        return number_format($total, 2) . ' ' . __('KD');
+        return number_format($total, 2) . ' ' . strtoupper(__('KD'));
     }
     private function earningsTrend()
     {
         // Query to get the sum of earnings grouped by day for the last 7 days
-        $earnings = Purchase::select(
-            DB::raw('DATE(purchases.created_at) as date'),
-            DB::raw('SUM(packages.price) as total')
+        $earnings = Order::select(
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('SUM(total) as total')
         )
-            ->join('packages', 'purchases.package_id', '=', 'packages.id')
             ->where('payment_status', TapPaymentStatusEnum::CAPTURED->value)
+            ->where('created_at', '>=', Carbon::today()->subDays(6))
             ->groupBy('date')
             ->orderBy('date')
-            ->limit(7)
             ->pluck('total', 'date')
             ->toArray();
+
         // Ensure we have data for each day in the last 7 days, even if no purchases occurred
         $dates = collect(range(0, 6))->map(function ($daysAgo) {
             return Carbon::today()->subDays($daysAgo)->format('Y-m-d');
@@ -46,17 +46,57 @@ class AudienceAnalyticsWidget extends BaseWidget
 
         return $earningsTrend->toArray();
     }
+
+    private function topUserByPurchase()
+    {
+        $topUserData = Order::where('payment_status', TapPaymentStatusEnum::CAPTURED->value)
+            ->select('user_id', DB::raw('SUM(total) as total_spent'))
+            ->groupBy('user_id')
+            ->orderByDesc('total_spent')
+            ->first();
+
+        if ($topUserData) {
+            $user = User::find($topUserData->user_id);
+            if ($user) {
+                return [
+                    'name' => $user->name,
+                    'total_spent' => $topUserData->total_spent,
+                ];
+            }
+        }
+
+        return null;
+    }
+
+
     protected function getStats(): array
     {
+        $topUser = $this->topUserByPurchase();
+
+        if ($topUser) {
+            $topUserName = $topUser['name'];
+            $totalSpent = number_format($topUser['total_spent'], 2) . ' ' . __('KD');
+        } else {
+            $topUserName = __('No Data');
+            $totalSpent = '';
+        }
+
         return [
-            Stat::make(__(''), $this->totalEarning())
+            Stat::make(__('Total Earnings'), $this->totalEarning())
                 ->description(__('Total Earnings'))
                 ->descriptionIcon('heroicon-o-currency-dollar')
-                ->chart($this->earningsTrend()) // Example data for the chart, replace with real data if needed
+                ->chart($this->earningsTrend())
                 ->color('success'),
-            Stat::make('Top User by Purchase', 'John Doe')
-                ->description('$5,678 total spent')
+
+            Stat::make(__('Top User by Purchase'), $topUserName)
+                ->description($totalSpent . ' ' . __('total spent'))
                 ->descriptionIcon('heroicon-m-currency-dollar'),
+
+            Stat::make(__(''), Game::count())
+                ->description(__('Number of games played'))
+                // ->descriptionIcon('heroicon-o-currency-dollar')
+                // ->chart($this->earningsTrend()) // Example data for the chart, replace with real data if needed
+                ->color('success'),
         ];
     }
 }

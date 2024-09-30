@@ -33,8 +33,8 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Sky,
             ])
-            ->brandLogo($this->getLogoUrl())
-            ->favicon($this->getFaviconUrl())
+            ->brandLogo(fn() => Storage::disk('do')->url(settings('site_logo')))
+            ->favicon(fn() => Storage::disk('do')->url(settings('site_favicon')))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -63,16 +63,5 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 // \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
             ]);
-    }
-
-    protected function getLogoUrl()
-    {
-        $logo = settings('site_logo');
-        return $logo ? Storage::disk('do')->url($logo) : null;
-    }
-    protected function getFaviconUrl()
-    {
-        $favicon = settings('site_favicon');
-        return $favicon ? Storage::disk('do')->url($favicon) : null;
     }
 }

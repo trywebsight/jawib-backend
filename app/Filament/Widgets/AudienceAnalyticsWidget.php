@@ -9,7 +9,6 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Models\Purchase;
 use App\Models\User;
 
 class AudienceAnalyticsWidget extends BaseWidget

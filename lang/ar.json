@@ -124,7 +124,6 @@
     "invalid game id": "معرف اللعبة غير صالح",
     "invalid package id": "معرف الباقة غير صالح",
     "invalid request id": "معرف الطلب غير صالح",
-    "invalid purchase id": "معرف الشراء غير صالح",
     "payment already processed": "تمت معالجة الدفع مسبقًا",
     "paid successfully": "تم الدفع بنجاح",
     "payment failed": "فشل الدفع",

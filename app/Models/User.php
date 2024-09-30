@@ -33,10 +33,7 @@ class User extends Authenticatable implements Wallet, Customer
     {
         return $this->hasMany(Game::class);
     }
-    public function purchases()
-    {
-        return $this->hasMany(Purchase::class);
-    }
+
     public function coupons()
     {
         return $this->belongsToMany(Coupon::class)->withPivot('uses')->withTimestamps();

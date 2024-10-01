@@ -33,11 +33,11 @@ class UserGetCreditJob implements ShouldQueue
     {
 
         // Send Notification to the user when user gets credit from admin.
-        OneSignalService::sendPushByPhone(
-            $this->user->phone,
-            'You\'ve Got Credit!',
-            'Congratulations! You\'ve got a games credit'
-        );
+        // OneSignalService::sendPushByPhone(
+        //     $this->user->phone,
+        //     'You\'ve Got Credit!',
+        //     'Congratulations! You\'ve got a games credit'
+        // );
 
         // Send deactivation email to user.
         if ($this->user->email) {

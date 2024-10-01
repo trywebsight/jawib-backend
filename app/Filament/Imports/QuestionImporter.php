@@ -78,8 +78,8 @@ class QuestionImporter extends Importer
     {
         return Question::firstOrNew([
             'question' => $this->data['question'],
-            'category_id' => 5,
-            // 'category_id' => $this->options['category_id'],
+            // 'category_id' => 5,
+            'category_id' => $this->options['category_id'],
         ]);
     }
 

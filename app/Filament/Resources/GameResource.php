@@ -33,23 +33,8 @@ class GameResource extends Resource
                     ->multiple()
                     ->options(Category::pluck('title', 'id'))
                     ->required()
-                    ->minItems(6)
-                    ->maxItems(6)
-                    ->disabledOn('edit')
-                    ->afterStateUpdated(function ($state, callable $set, $livewire) {
-                        if (count($state) === 6) {
-                            $userId = $livewire->data['user_id'] ?? null;
-                            $questions = self::getQuestionsForCategories($state, $userId);
-                            $set('questions', $questions->pluck('id')->toArray());
-                        }
-                    }),
-                // ->afterStateUpdated(function ($state, callable $set) {
-                //     if (count($state) === 6) {
-                //         $questions = self::getQuestionsForCategories($state);
-                //         $set('questions', $questions->pluck('id')->toArray());
-                //     }
-                // }),
-                Forms\Components\Hidden::make('questions'),
+                    ->minItems(4)
+                    ->maxItems(6),
             ]);
     }
 
@@ -76,9 +61,7 @@ class GameResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
@@ -97,34 +80,5 @@ class GameResource extends Resource
             // 'edit' => Pages\EditGame::route('/{record}/edit'),
             'view' => Pages\ViewGame::route('/{record}'),
         ];
-    }
-
-    protected static function getQuestionsForCategories($categoryIds, $userId)
-    {
-        $questions = collect();
-        $usedQuestionIds = Game::where('user_id', $userId)
-            ->with('questions')
-            ->get()
-            ->pluck('questions')
-            ->flatten()
-            ->pluck('id')
-            ->unique();
-
-        foreach ($categoryIds as $categoryId) {
-            for ($level = 1; $level <= 3; $level++) {
-                $levelQuestions = Question::where('category_id', $categoryId)
-                    ->where('level', $level)
-                    ->whereNotIn('id', $usedQuestionIds)
-                    ->whereNotIn('id', $questions->pluck('id'))
-                    ->inRandomOrder()
-                    ->take(2)
-                    ->get();
-
-                $questions = $questions->concat($levelQuestions);
-                $usedQuestionIds = $usedQuestionIds->concat($levelQuestions->pluck('id'));
-            }
-        }
-
-        return $questions;
     }
 }

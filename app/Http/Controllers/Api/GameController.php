@@ -4,10 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Game;
+use App\Services\GameService;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
+    protected $gameService;
+
+    public function __construct(GameService $gameService)
+    {
+        $this->gameService = $gameService;
+    }
+
     function my_games(Request $request)
     {
         $user = auth('sanctum')->user();
@@ -26,11 +34,18 @@ class GameController extends Controller
     }
     function create_game(Request $request)
     {
-        return $this->success($request, __(''));
-        $game = Game::find($id);
-        if (!$game) {
-            return $this->error([], __("invalid game id"), 422);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'categories' => 'required|array|min:4|max:6',
+            'categories.*' => 'exists:categories,id',
+        ]);
+        $user = auth('sanctum')->user();
+        try {
+            $game = $this->gameService->createGame($user, $request->all());
+            return $this->success(['game' => $game], __('Game created successfully'));
+        } catch (\Exception $e) {
+            return $this->error(['errors' => [$e->getMessage()]], $e->getMessage(), 400);
         }
-        return $this->success($game, __('games'));
     }
 }

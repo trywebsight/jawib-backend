@@ -131,8 +131,8 @@ class OrderController extends Controller
                 }
             }
 
-            $totalCredits = $order->items->sum(function ($item) {
-                return $item->package->games_count * $item->quantity;
+            $totalCredits = $order->packages->sum(function ($orderPackage) {
+                return $orderPackage->package->games_count * $orderPackage->quantity;
             });
 
             $order->user->deposit($totalCredits, ['description' => 'package purchase', 'order_id' => $order->id]);

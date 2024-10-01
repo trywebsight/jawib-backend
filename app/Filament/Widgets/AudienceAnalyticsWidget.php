@@ -18,7 +18,7 @@ class AudienceAnalyticsWidget extends BaseWidget
         $total = Order::where('payment_status', TapPaymentStatusEnum::CAPTURED->value)
             ->sum('total');
 
-        return number_format($total, 2) . ' ' . strtoupper(__('KD'));
+        return number_format($total, 2) . ' ' . __('KD');
     }
     private function earningsTrend()
     {

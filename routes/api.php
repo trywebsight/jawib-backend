@@ -47,7 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/question-feedback', [QuestionFeedbackController::class, 'feedback']);
     // Order routes
     Route::post('/orders/create',   [OrderController::class, 'create']);
-    Route::get('/orders/callback',  [OrderController::class, 'callback'])->name('orders.tap_callback');
+    Route::get('/orders/callback',  [OrderController::class, 'callback'])->name('orders.tap_callback')->withoutMiddleware('auth:sanctum');
     Route::get('/orders/{id}',      [OrderController::class, 'show']);
     Route::get('/my-orders',        [OrderController::class, 'myOrders']);
 });

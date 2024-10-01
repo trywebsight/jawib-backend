@@ -25,7 +25,7 @@ class QuestionFeedbackResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->label(__('user'))
+                    ->label(__('provided by'))
                     ->relationship('user', 'name') // Assuming you want to select the user providing feedback
                     ->required(),
                 Forms\Components\Select::make('question_id')
@@ -43,8 +43,6 @@ class QuestionFeedbackResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')->label(__('user'))
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('question.question')->label(__('question'))
                     ->limit(30)
                     ->searchable()
@@ -58,6 +56,8 @@ class QuestionFeedbackResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('feedback')->label(__('feedback'))
                     ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')->label(__('provided by'))
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')->label(__('provided on'))->dateTime(),
             ])
             ->filters([
@@ -65,7 +65,7 @@ class QuestionFeedbackResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

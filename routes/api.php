@@ -11,7 +11,10 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\PackagePaymentController;
 use App\Http\Controllers\Api\PageController;
+use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\QuestionFeedbackController;
+use App\Http\Controllers\Api\UserCustomCategoryController;
+use App\Http\Controllers\Api\UserCustomQuestionController;
 use Illuminate\Support\Facades\Route;
 
 // AUTH ROUTES
@@ -50,6 +53,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders/callback',  [OrderController::class, 'callback'])->name('orders.tap_callback')->withoutMiddleware('auth:sanctum');
     Route::get('/orders/{id}',      [OrderController::class, 'show']);
     Route::get('/my-orders',        [OrderController::class, 'myOrders']);
+
+    // customized user questions & categories
+    // Route::apiResources(
+    //     [
+    //         'customized/categories'        => UserCustomCategoryController::class,
+    //         'customized/questions'        => UserCustomQuestionController::class,
+    //     ],
+    //     ['only' => ['store', 'update', 'destroy']]
+    // );
+    Route::apiResource('customized/categories', UserCustomCategoryController::class);
+    Route::apiResource('customized/questions', UserCustomQuestionController::class);
 });
 
 // Site resource APIs

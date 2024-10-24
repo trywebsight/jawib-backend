@@ -12,7 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -118,7 +118,11 @@ class QuestionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->searchable()->label(__('id'))->toggleable(),
+                Tables\Columns\TextColumn::make('id')
+                    ->sortable()
+                    ->searchable()
+                    ->label(__('id'))
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('question')->searchable()->label(__('question'))
                     ->limit(30)
                     ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
@@ -131,6 +135,7 @@ class QuestionResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('answer')->searchable()->label(__('answer')),
                 Tables\Columns\TextColumn::make('level')
+                    ->sortable()
                     ->label(__('level'))
                     ->formatStateUsing(function ($state) {
                         return match ($state) {
@@ -171,9 +176,13 @@ class QuestionResource extends Resource
         return [];
     }
 
-    public static function query(): EloquentBuilder
+    // public static function query(): Builder
+    // {
+    //     return parent::query()->with(['category']);
+    // }
+    public static function getEloquentQuery(): Builder
     {
-        return parent::query()->with(['category']);
+        return parent::getEloquentQuery()->whereNull('user_id');
     }
 
     public static function getPages(): array

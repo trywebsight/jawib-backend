@@ -29,6 +29,16 @@ class User extends Authenticatable implements Wallet, Customer
         ];
     }
 
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
+
     public function games()
     {
         return $this->hasMany(Game::class);

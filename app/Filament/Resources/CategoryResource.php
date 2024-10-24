@@ -40,6 +40,11 @@ class CategoryResource extends Resource
         return __('categories');
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->whereNull('user_id');
+    }
+
     public static function form(Form $form): Form
     {
         return $form

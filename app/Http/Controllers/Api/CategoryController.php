@@ -11,7 +11,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        return $this->success(CategoryResource::collection(Category::get()));
+        return $this->success(CategoryResource::collection(Category::system()->get()));
     }
     public function show($id)
     {

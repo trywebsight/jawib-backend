@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\PackagePaymentController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\QuestionFeedbackController;
+use App\Http\Controllers\Api\SuggestedQuestionController;
 use App\Http\Controllers\Api\UserCustomCategoryController;
 use App\Http\Controllers\Api\UserCustomQuestionController;
 use Illuminate\Support\Facades\Route;
@@ -55,15 +56,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-orders',        [OrderController::class, 'myOrders']);
 
     // customized user questions & categories
-    // Route::apiResources(
-    //     [
-    //         'customized/categories'        => UserCustomCategoryController::class,
-    //         'customized/questions'        => UserCustomQuestionController::class,
-    //     ],
-    //     ['only' => ['store', 'update', 'destroy']]
-    // );
     Route::apiResource('customized/categories', UserCustomCategoryController::class);
     Route::apiResource('customized/questions', UserCustomQuestionController::class);
+
+    // suggest questions
+    Route::apiResource('suggested-questions', SuggestedQuestionController::class);
+
 });
 
 // Site resource APIs

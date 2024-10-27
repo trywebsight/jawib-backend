@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class GamesRelationManager extends RelationManager
+class QuestionsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'games';
+    protected static string $relationship = 'questions';
 
     public function form(Form $form): Form
     {
@@ -24,43 +24,29 @@ class GamesRelationManager extends RelationManager
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Hidden::make('user_id')
-                    ->default(fn() => $this->ownerRecord->id),
-                Forms\Components\Select::make('categories')
-                    ->label('Categories')
-                    ->multiple()
-                    ->options(fn() => Category::all()->pluck('title', 'id'))
-                    ->required()
-                    ->helperText('Select up to 6 categories.')
-                    ->rules(['required', 'array', 'max:6'])
-                    ->preload(),
-
-
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('title')
+            ->recordTitleAttribute('id')
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\TextColumn::make('categories.title')
+                Tables\Columns\TextColumn::make('id'),
+                Tables\Columns\TextColumn::make('question'),
+                Tables\Columns\TextColumn::make('category.title')
                     ->listWithLineBreaks()
                     ->limitList(6),
             ])
             ->filters([
                 //
             ])
-            ->headerActions([])
+            ->headerActions([
+            ])
             ->actions([
-                // Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
             ]);
     }
 }

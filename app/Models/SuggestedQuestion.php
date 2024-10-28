@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class SuggestedQuestion extends Model
 {
@@ -28,4 +29,22 @@ class SuggestedQuestion extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($suggestedQuestion) {
+            if (!empty($suggestedQuestion->images)) {
+                foreach ($suggestedQuestion->images as $image) {
+                    // Extract the path from the URL
+                    $path = parse_url($image, PHP_URL_PATH);
+                    $path = ltrim($path, '/'); // Remove leading slash
+                    // Delete the file from the 'do' disk
+                    Storage::disk('do')->delete($path);
+                }
+            }
+        });
+    }
+
 }

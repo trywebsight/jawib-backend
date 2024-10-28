@@ -23,9 +23,17 @@ class SuggestedQuestionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('question')->limit(50),
-                Tables\Columns\TextColumn::make('category.title')->label('Category'),
+                Tables\Columns\TextColumn::make('category.title')
+                    ->label('Category')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('user.name')->label('Suggested By'),
+                Tables\Columns\ImageColumn::make('images')
+                    ->circular()
+                    ->disk('do')
+                    ->stacked()
+                    ->toggleable(),
                 // Tables\Columns\ImageColumn::make('images'),
                 Tables\Columns\TextColumn::make('created_at')->label('Created')->since(),
             ])

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\SuggestedQuestion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 
@@ -30,11 +31,12 @@ class SuggestedQuestionController extends Controller
                 ],
                 'answer' => 'nullable|string',
                 'images' => 'nullable|array',
-                // 'images.*' => 'file', // Assuming images are stored as URLs or paths
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
         } catch (ValidationException $e) {
             return $this->error($e->errors(), $e->getMessage(), 422);
         }
+
 
         $suggestedQuestion = SuggestedQuestion::firstOrCreate([
             'question'    => $request->question,
@@ -42,8 +44,25 @@ class SuggestedQuestionController extends Controller
         ], [
             'category_id' => $request->category_id,
             'answer'      => $request->answer,
-            'images'      => [],
+            // 'images'      => $imagePaths,
         ]);
+
+        if (empty($suggestedQuestion->images)) {
+            // Handle image uploads
+            $imagePaths = [];
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    // Store the image on the 'do' disk in the 'suggested-questions' folder
+                    $path = $image->store('suggested-questions', 'do');
+                    // Generate a URL for the stored image
+                    $url = Storage::disk('do')->url($path);
+                    $imagePaths[] = $url;
+                }
+            }
+            $suggestedQuestion->images = $imagePaths;
+            $suggestedQuestion->save();
+        }
+
         return $this->success($suggestedQuestion, __('thank you for your suggestion'), 201);
     }
 

@@ -90,19 +90,18 @@ class StoreOrderResource extends Resource
 
                 Tables\Columns\TextColumn::make('total')
                     ->label(__('Total'))
-                    ->money('usd')
+                    ->money('kwd')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('status')
                     ->translateLabel()
-                    ->badge()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('payment_status')
                     ->translateLabel()
-                    ->badge()
-                    ->color(TapPaymentStatusEnum::class)
+                    // ->badge()
+                    // ->color(TapPaymentStatusEnum::class)
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
@@ -117,7 +116,8 @@ class StoreOrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 // You can add bulk actions if needed

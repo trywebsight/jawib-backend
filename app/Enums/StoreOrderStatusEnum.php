@@ -13,15 +13,16 @@ enum StoreOrderStatusEnum: string implements HasColor, HasIcon, HasLabel
     case PROCESSING = 'PROCESSING';
     case COMPLETED = 'COMPLETED';
     case CANCELLED = 'CANCELLED';
-    case FAILED = 'FAILED';
+    // case FAILED = 'FAILED';
 
 
     public function getColor(): string|array|null
     {
         return match ($this) {
             self::COMPLETED => 'success',
-            self::PROCESSING => 'info',
-            self::CANCELLED, self::FAILED => 'danger',
+            self::PENDING => 'info',
+            self::PROCESSING => 'warning',
+            self::CANCELLED => 'danger',
         };
     }
 
@@ -34,8 +35,8 @@ enum StoreOrderStatusEnum: string implements HasColor, HasIcon, HasLabel
     {
         return match ($this) {
             self::COMPLETED => 'heroicon-o-check-circle',
-            self::PROCESSING => 'heroicon-o-clock',
-            self::CANCELLED, self::FAILED => 'heroicon-o-x-circle',
+            self::PROCESSING, self::PENDING => 'heroicon-o-clock',
+            self::CANCELLED => 'heroicon-o-x-circle',
         };
     }
 }

@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\Store\StoreOrderResource\Pages;
 
-use App\Enums\OrderStatusEnum;
 use App\Enums\StoreOrderStatusEnum;
 use App\Enums\TapPaymentStatusEnum;
-use App\Filament\Resources\OrderResource;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderItemsRelationManager;
+use App\Filament\Resources\Store\StoreOrderResource;
 use App\Filament\Resources\UserResource;
-use App\Models\Order;
+use App\Models\Store\StoreOrder;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Infolists;
@@ -18,12 +17,12 @@ use Illuminate\Support\HtmlString;
 
 class ViewStoreOrder extends ViewRecord
 {
-    protected static string $resource = OrderResource::class;
+    protected static string $resource = StoreOrderResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            // Actions\EditAction::make(),
             Actions\DeleteAction::make(),
         ];
     }
@@ -46,12 +45,12 @@ class ViewStoreOrder extends ViewRecord
                         ->columns()
                         ->schema([
 
-                            Infolists\Components\TextEntry::make('name')
+                            Infolists\Components\TextEntry::make('user.name')
                                 ->label('Name')
                                 ->url(
-                                    fn(Order $record) => $record->user_id ? UserResource::getUrl('edit', [$record->user_id]) : "#"
+                                    fn(StoreOrder $record) => $record->user_id ? UserResource::getUrl('edit', [$record->user_id]) : "#"
                                 ),
-                            Infolists\Components\TextEntry::make('phone')
+                            Infolists\Components\TextEntry::make('user.phone')
                                 ->label('phone'),
 
                             Infolists\Components\TextEntry::make('payment_status')
@@ -60,7 +59,7 @@ class ViewStoreOrder extends ViewRecord
                                         ->icon('heroicon-o-pencil')
                                         ->button()
                                         ->slideOver()
-                                        ->form(fn(Order $record) => [
+                                        ->form(fn(StoreOrder $record) => [
                                             Forms\Components\ToggleButtons::make('payment_status')
                                                 ->default($record->payment_status)
                                                 ->inline()
@@ -71,7 +70,7 @@ class ViewStoreOrder extends ViewRecord
                                         ->successNotificationTitle(
                                             __('Payment status updated successfully!')
                                         )
-                                        ->action(function (Action $action, Order $record, array $data): void {
+                                        ->action(function (Action $action, StoreOrder $record, array $data): void {
                                             $record->update(['payment_status' => $data['payment_status']]);
 
                                             $action->success();
@@ -85,7 +84,7 @@ class ViewStoreOrder extends ViewRecord
                                         ->icon('heroicon-o-pencil')
                                         ->button()
                                         ->slideOver()
-                                        ->form(fn(Order $record) => [
+                                        ->form(fn(StoreOrder $record) => [
                                             Forms\Components\ToggleButtons::make('status')
                                                 ->default($record->status)
                                                 ->inline()
@@ -96,7 +95,7 @@ class ViewStoreOrder extends ViewRecord
                                         ->successNotificationTitle(
                                             __('Status updated successfully!')
                                         )
-                                        ->action(function (Action $action, Order $record, array $data): void {
+                                        ->action(function (Action $action, StoreOrder $record, array $data): void {
                                             $record->update(['status' => $data['status']]);
 
                                             $action->success();
@@ -105,6 +104,7 @@ class ViewStoreOrder extends ViewRecord
                         ]),
                     // Address
                     Infolists\Components\Section::make('Address')
+                        ->hidden() /// HIDDEN TEMPORARY
                         ->schema([
                             Infolists\Components\TextEntry::make('address.building_type')
                                 ->label('Building type'),
@@ -127,14 +127,14 @@ class ViewStoreOrder extends ViewRecord
                                 ->label('Address Comment'),
                         ])
                         ->columns(4)
-                        ->visible(fn(Order $record) => !$record->is_guest),
+                        ->visible(fn(StoreOrder $record) => !$record->is_guest),
 
                     // New Order Items Section
                     Infolists\Components\Section::make('Order Items')
                         ->schema([
                             Infolists\Components\RepeatableEntry::make('items')
                                 ->schema([
-                                    Infolists\Components\TextEntry::make('product.title_en')
+                                    Infolists\Components\TextEntry::make('product.title')
                                         ->columnSpan(3)
                                         ->label('Product Name'),
                                     Infolists\Components\TextEntry::make('quantity')
@@ -157,16 +157,15 @@ class ViewStoreOrder extends ViewRecord
                     Infolists\Components\Section::make()
                         ->schema([
 
-                            Infolists\Components\TextEntry::make('delivery_fee')
-                                ->icon('heroicon-s-currency-dollar')
-                                ->money('KWD'),
-                            Infolists\Components\TextEntry::make('discount')
-                                ->icon('heroicon-s-currency-dollar')
-                                // ->state(fn(Order $record) => $record->total)
-                                ->money('KWD'),
+                            // Infolists\Components\TextEntry::make('shipping')
+                            //     ->icon('heroicon-s-currency-dollar')
+                            //     ->money('KWD'),
+                            // Infolists\Components\TextEntry::make('discount')
+                            //     ->icon('heroicon-s-currency-dollar')
+                            //     ->money('KWD'),
                             Infolists\Components\TextEntry::make('total')
                                 ->icon('heroicon-s-currency-dollar')
-                                ->state(fn(Order $record) => $record->total)
+                                ->state(fn(StoreOrder $record) => $record->total)
                                 ->money('KWD'),
 
                         ]),
@@ -180,10 +179,6 @@ class ViewStoreOrder extends ViewRecord
                             Infolists\Components\TextEntry::make('updated_at')
                                 ->dateTime()
                                 ->icon('heroicon-s-calendar'),
-
-                            // Infolists\Components\TextEntry::make('deleted_at')
-                            //                                 //     ->dateTime()
-                            //     ->icon('heroicon-s-calendar'),
                         ]),
                 ]),
         ])

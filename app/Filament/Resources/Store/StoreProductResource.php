@@ -66,8 +66,10 @@ class StoreProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\ImageColumn::make('image')
                     ->disk('do')
+                    ->circular()
                     ->label(__('Image'))
                     ->size(50),
 
@@ -115,7 +117,7 @@ class StoreProductResource extends Resource
         return [
             'index' => Pages\ListStoreProducts::route('/'),
             // 'create' => Pages\CreateStoreProduct::route('/create'),
-            // 'edit' => Pages\EditStoreProduct::route('/{record}/edit'),
+            'edit' => Pages\EditStoreProduct::route('/{record}/edit'),
         ];
     }
 }

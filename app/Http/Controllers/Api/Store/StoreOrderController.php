@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Validator;
 
 class StoreOrderController extends Controller
 {
+    public function myOrders()
+    {
+        $user = auth('sanctum')->user();
+        return $this->success($user->store_orders, __('user store orders'));
+    }
 
     // Display the specified order (must be owned by the authenticated user)
     public function show($id)

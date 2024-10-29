@@ -79,6 +79,7 @@ Route::prefix('store')->group(function () {
     // Tap Payment callback route
     Route::get('/orders/callback', [StoreOrderController::class, 'callback'])->name('store.orders.callback');
     // Store Orders (require authentication)
+    Route::get('/my-orders', [StoreOrderController::class, 'myOrders'])->middleware('auth:sanctum');
     Route::post('/orders', [StoreOrderController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/orders/{id}', [StoreOrderController::class, 'show'])->middleware('auth:sanctum');
 });

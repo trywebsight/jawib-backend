@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Store\StoreOrder;
 use Bavix\Wallet\Traits\HasWallet;
 use Bavix\Wallet\Interfaces\Wallet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,6 +38,15 @@ class User extends Authenticatable implements Wallet, Customer
     public function questions()
     {
         return $this->hasMany(Question::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+    public function store_orders()
+    {
+        return $this->hasMany(StoreOrder::class);
     }
 
     public function games()

@@ -20,13 +20,18 @@ class StoreOrder extends Model
         'payment_status',
     ];
 
+    protected $casts = [
+        'shipping' => 'float',
+        'total' => 'float',
+    ];
+
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
     }
 
-    public function orderItems()
+    public function items()
     {
-        return $this->hasMany(StoreOrderItem::class);
+        return $this->hasMany(StoreOrderItem::class, 'order_id');
     }
 }

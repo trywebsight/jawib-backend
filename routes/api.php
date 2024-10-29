@@ -13,6 +13,9 @@ use App\Http\Controllers\Api\PackagePaymentController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\QuestionFeedbackController;
+use App\Http\Controllers\Api\Store\StoreOrderController;
+use App\Http\Controllers\Api\Store\StoreProductController;
+use App\Http\Controllers\Api\Store\StoreCategoryController;
 use App\Http\Controllers\Api\SuggestedQuestionController;
 use App\Http\Controllers\Api\UserCustomCategoryController;
 use App\Http\Controllers\Api\UserCustomQuestionController;
@@ -61,8 +64,25 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // suggest questions
     Route::apiResource('suggested-questions', SuggestedQuestionController::class);
-
 });
+
+// Store Routes
+Route::prefix('store')->group(function () {
+    // Store Categories
+    Route::get('/categories', [StoreCategoryController::class, 'index']);
+    Route::get('/categories/{id}', [StoreCategoryController::class, 'show']);
+
+    // Store Products
+    Route::get('/products', [StoreProductController::class, 'index']);
+    Route::get('/products/{id}', [StoreProductController::class, 'show']);
+
+    // Tap Payment callback route
+    Route::get('/orders/callback', [StoreOrderController::class, 'callback'])->name('store.orders.callback');
+    // Store Orders (require authentication)
+    Route::post('/orders', [StoreOrderController::class, 'store'])->middleware('auth:sanctum');
+    Route::get('/orders/{id}', [StoreOrderController::class, 'show'])->middleware('auth:sanctum');
+});
+
 
 // Site resource APIs
 Route::apiResources(

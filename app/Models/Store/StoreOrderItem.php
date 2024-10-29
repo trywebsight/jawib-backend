@@ -18,6 +18,10 @@ class StoreOrderItem extends Model
         'price',
     ];
 
+    protected $casts = [
+        'price' => 'float',
+    ];
+
     public function order()
     {
         return $this->belongsTo(StoreOrder::class);

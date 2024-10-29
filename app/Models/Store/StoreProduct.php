@@ -4,6 +4,7 @@ namespace App\Models\Store;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class StoreProduct extends Model
 {
@@ -18,6 +19,23 @@ class StoreProduct extends Model
         'image',
         'price',
     ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $casts = [
+        'price' => 'float',
+    ];
+
+
+    public function getImageAttribute($value)
+    {
+        if ($value) {
+            return Storage::disk('do')->url($value);
+        }
+    }
 
     public function category()
     {

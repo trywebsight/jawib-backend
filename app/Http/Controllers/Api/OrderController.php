@@ -23,6 +23,12 @@ class OrderController extends Controller
         $this->couponService = $couponService;
     }
 
+    public function myOrders()
+    {
+        $user = auth('sanctum')->user();
+        return $this->success($user->orders, __('user orders'));
+    }
+
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [

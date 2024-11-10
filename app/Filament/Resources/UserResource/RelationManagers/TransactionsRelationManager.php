@@ -23,13 +23,11 @@ class TransactionsRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
+                    ->toggleable($isToggleHiddenByDefault = true)
                     ->label(__('transaction id')),
-                Tables\Columns\TextColumn::make('amount')
-                    ->label(__('amount'))
-                    ->badge()
-                    ->color('success'),
                 Tables\Columns\TextColumn::make('type')
                     ->label(__('type'))
+                    ->badge()
                     ->formatStateUsing(fn(string $state): string => match ($state) {
                         'deposit' => __('deposit'),
                         'withdraw' => __('withdraw'),
@@ -40,6 +38,12 @@ class TransactionsRelationManager extends RelationManager
                         'withdraw' => 'danger',
                         default => 'warning',
                     }),
+                Tables\Columns\TextColumn::make('amount')
+                    ->label(__('amount')),
+                // ->badge()
+                // ->color('success'),
+                Tables\Columns\TextColumn::make('meta.description')
+                    ->label(__('reason')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Date'),
             ])
@@ -47,10 +51,10 @@ class TransactionsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

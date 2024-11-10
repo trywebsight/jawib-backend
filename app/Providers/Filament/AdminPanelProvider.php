@@ -31,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Sky,
+                'primary' => Color::Amber,
             ])
             ->brandLogo(fn() => Storage::disk('do')->url(settings('site_logo')))
             ->favicon(fn() => Storage::disk('do')->url(settings('site_favicon')))

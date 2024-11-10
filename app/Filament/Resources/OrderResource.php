@@ -62,13 +62,19 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('id')->sortable(),
                 Tables\Columns\TextColumn::make('user.name')->searchable(),
                 Tables\Columns\TextColumn::make('total')->money('KWD')->sortable(),
-                Tables\Columns\TextColumn::make('discount')->money('KWD')
-                    ->toggleable($isToggleHiddenByDefault = true),
+                Tables\Columns\TextColumn::make('package')
+                    ->state(fn($record) => $record->first_package() ?? ''),
+                // Tables\Columns\TextColumn::make('discount')->money('KWD')
+                //     ->toggleable($isToggleHiddenByDefault = true),
                 Tables\Columns\TextColumn::make('coupon')
+                    ->state(fn($record) => $record->coupon ?? '-')
+                    ->description(fn($record) => $record->discount ? formated_price($record->discount) : '')
+                    ->money('KWD')
                     ->toggleable($isToggleHiddenByDefault = true),
                 Tables\Columns\TextColumn::make('payment_status')->sortable()
-                    // ->badge()
-                    // ->color(TapPaymentStatusEnum::class),
+                    ->badge()
+                    ->color(fn($record) => TapPaymentStatusEnum::from($record->payment_status)->getColor())
+                    ->state(fn($record) => TapPaymentStatusEnum::from($record->payment_status)->getLabel())
                     ->translateLabel(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
             ])
@@ -77,39 +83,43 @@ class OrderResource extends Resource
                     ->options(TapPaymentStatusEnum::class),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
-    public static function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-                Section::make('Order Details')
-                    ->schema([
-                        TextEntry::make('user.name')->label('Customer'),
-                        TextEntry::make('total')->money('KWD'),
-                        TextEntry::make('discount')->money('KWD'),
-                        TextEntry::make('coupon'),
-                        TextEntry::make('tap_id')->label('TAP ID'),
-                        TextEntry::make('payment_status'),
-                        TextEntry::make('created_at')->dateTime(),
-                    ])->columns(3),
-                Section::make('Packages')
-                    ->schema([
-                        RepeatableEntry::make('packages')
-                            ->schema([
-                                TextEntry::make('package.title')->label('Package'),
-                                TextEntry::make('quantity'),
-                                TextEntry::make('price')->money('KWD'),
-                            ])
-                            ->columns(3)
-                    ])
-            ]);
-    }
+    // public static function infolist(Infolist $infolist): Infolist
+    // {
+    //     return $infolist
+    //         ->schema([
+    //             Section::make('Order Details')
+    //                 ->schema([
+    //                     TextEntry::make('user.name')->label('Customer'),
+    //                     TextEntry::make('total')->money('KWD'),
+    //                     TextEntry::make('discount')->money('KWD'),
+    //                     TextEntry::make('coupon'),
+    //                     TextEntry::make('tap_id')->label('TAP ID'),
+    //                     TextEntry::make('payment_status'),
+    //                     TextEntry::make('created_at')->dateTime(),
+    //                 ])->columns(3),
+    //             Section::make('Packages')
+    //                 ->schema([
+    //                     RepeatableEntry::make('packages')
+    //                         ->schema([
+    //                             TextEntry::make('package.title')->label('Package'),
+    //                             TextEntry::make('quantity'),
+    //                             TextEntry::make('price')->money('KWD'),
+    //                         ])
+    //                         ->columns(3)
+    //                 ])
+    //         ]);
+    // }
 
     public static function getRelations(): array
     {

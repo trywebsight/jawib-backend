@@ -36,9 +36,10 @@ class GameController extends Controller
     {
 
         $request->validate([
-            'title' => 'required|string|max:255',
-            'categories' => 'required|array|min:4|max:6',
-            'categories.*' => 'exists:categories,id',
+            'title'         => 'required|string|max:255',
+            'teams'         => 'sometimes|array|min:2|max:4',
+            'categories'    => 'required|array|min:4|max:6',
+            'categories.*'  => 'exists:categories,id',
         ]);
         $user = auth('sanctum')->user();
         try {

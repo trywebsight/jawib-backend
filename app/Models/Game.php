@@ -7,8 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Game extends Model
 {
-    protected $fillable = ['user_id', 'title', 'played_times'];
+    protected $guarded = ['id'];
 
+    protected $casts = [
+        'teams' => 'array',
+        // 'selected_categories' => 'array', // If 'categories' is also an array
+    ];
+
+    public function teams()
+    {
+        if (is_array($this->teams)) {
+            return array_column($this->teams, 'name');
+        }
+        return [];
+    }
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -23,5 +35,4 @@ class Game extends Model
     {
         return $this->belongsToMany(Question::class, 'game_questions');
     }
-
 }

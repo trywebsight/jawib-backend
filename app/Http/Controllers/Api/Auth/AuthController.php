@@ -27,7 +27,7 @@ class AuthController extends Controller
             'email'             => 'sometimes|nullable|string|max:255|unique:users,email',
             'password'          => 'required|string',
             'country'           => 'nullable|string',
-            'bod'               => 'nullable|date',
+            'dob'               => 'nullable|date',
             'gender'            => 'nullable|string',
         ]);
 

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('password');
             $table->integer('points')->nullable()->default(0)->after('country');
-            $table->date('bod')->nullable();
+            $table->date('dob')->nullable();
             $table->string('gender')->nullable();
             $table->string('country')->nullable();
             $table->string('avatar')->nullable();

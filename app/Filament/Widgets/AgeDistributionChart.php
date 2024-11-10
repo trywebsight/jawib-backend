@@ -11,8 +11,8 @@ class AgeDistributionChart extends ChartWidget
 
     protected function getData(): array
     {
-        $users = User::selectRaw('TIMESTAMPDIFF(YEAR, bod, CURDATE()) as age')
-            ->whereNotNull('bod')
+        $users = User::selectRaw('TIMESTAMPDIFF(YEAR, dob, CURDATE()) as age')
+            ->whereNotNull('dob')
             ->get();
 
         $ageRanges = [

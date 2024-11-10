@@ -27,7 +27,14 @@ enum TapPaymentStatusEnum: string implements HasColor, HasIcon, HasLabel
 
     public function getLabel(): ?string
     {
-        return ucfirst($this->value);
+        return match ($this) {
+            self::CAPTURED => ucfirst(__('paid')),
+            self::INITIATED => ucfirst(__('pending')),
+            self::CANCELLED => ucfirst(__('cancelled')),
+            self::FAILED => ucfirst(__('failed')),
+            self::DECLINED => ucfirst(__('declined')),
+        };
+        // return ucfirst($this->value);
     }
 
     public function getIcon(): ?string

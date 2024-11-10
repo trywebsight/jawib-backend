@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
+use App\Filament\Resources\GameResource;
 use App\Models\Category;
 use App\Models\Question;
 use Filament\Forms;
@@ -41,20 +42,33 @@ class GamesRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        // return (new GameResource)->table($table);
         return $table
             ->recordTitleAttribute('title')
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('teams')
+                    ->label(__('teams'))
+                    ->getStateUsing(function ($record) {
+                        return $record->teams();
+                    })
+                    ->badge()
+                    ->color('info')
+                    ->listWithLineBreaks(),
                 Tables\Columns\TextColumn::make('categories.title')
-                    ->listWithLineBreaks()
-                    ->limitList(6),
+                    ->badge()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->headerActions([])
             ->actions([
-                // Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

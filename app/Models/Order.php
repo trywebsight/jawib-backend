@@ -24,4 +24,12 @@ class Order extends Model
     {
         return $this->hasMany(OrderPackage::class);
     }
+    public function first_package()
+    {
+        try {
+            return $this->packages[0]->package->title;
+        } catch (\Throwable $th) {
+            return '';
+        }
+    }
 }

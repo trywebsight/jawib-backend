@@ -26,6 +26,7 @@ class GameService
         try {
             $game = Game::create([
                 'user_id' => $user->id,
+                'teams' => $data['teams'],
                 'title' => $data['title'],
                 'selected_categories' => json_encode($selectedCategories),
             ]);
@@ -33,7 +34,8 @@ class GameService
             $this->attachCategoriesToGame($game, $selectedCategories);
             $this->attachQuestionsToGame($game, $selectedCategories, $user);
 
-            $user->withdraw(1);
+            $user->withdraw(1, ['description' => 'game creation', 'game_id' => $game->id]);
+            // $user->withdraw(1);
 
             DB::commit();
             return $game;

@@ -18,11 +18,11 @@ class CreateGame extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         $gameService = (new GameService);
-
         try {
             $user = User::findOrFail($data['user_id']);
             $game = $gameService->createGame($user, [
                 'title' => $data['title'],
+                'teams' => $data['teams'],
                 'categories' => $data['categories'],
             ]);
 

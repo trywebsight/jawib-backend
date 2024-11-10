@@ -32,9 +32,10 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'coupon'            => 'nullable|sometimes|string|exists:coupons,code',
-            'package_id'        => 'required|exists:packages,id',
-            'payment_method'    => 'required|in:src_kw.knet,src_card,src_all',
+            'coupon' => 'nullable|sometimes|string|exists:coupons,code',
+            'packages' => 'required|array',
+            'packages.*.id' => 'required|exists:packages,id',
+            'packages.*.quantity' => 'required|integer|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -43,15 +44,15 @@ class OrderController extends Controller
 
         try {
             $user = auth('sanctum')->user();
-            $package_id = $request->input('package_id');
+            $packages = $request->input('packages');
             $couponCode = $request->input('coupon');
-            $payment_method = $request->input('payment_method');
             $coupon = null;
 
             if ($couponCode) {
                 $coupon = $this->couponService->getCouponByCode($couponCode);
+
                 if (!$coupon) {
-                    return $this->error(['coupon' => __('invalid or expired coupon')], __('Invalid coupon.'));
+                    return $this->error(['coupon' => 'Invalid or expired coupon.'], __('Invalid coupon.'));
                 }
             }
 
@@ -62,14 +63,20 @@ class OrderController extends Controller
                 'coupon' => $couponCode,
             ]);
 
-            $package = Package::findOrFail($package_id);
-            OrderPackage::create([
-                'order_id' => $order->id,
-                'package_id' => $package->id,
-                'quantity' => 1,
-                'price' => $package->price,
-            ]);
-            $totalAmount = $package->price;
+            $totalAmount = 0;
+            foreach ($packages as $packageData) {
+                $package = Package::findOrFail($packageData['id']);
+                $quantity = $packageData['quantity'];
+
+                OrderPackage::create([
+                    'order_id' => $order->id,
+                    'package_id' => $package->id,
+                    'quantity' => $quantity,
+                    'price' => $package->price,
+                ]);
+
+                $totalAmount += $package->price * $quantity;
+            }
 
             // Calculate discount
             $discount = 0;
@@ -84,7 +91,7 @@ class OrderController extends Controller
                 'discount' => $discount,
             ]);
 
-            $tap = TapPaymentService::createCharge($this->paymentData($order, $payment_method));
+            $tap = TapPaymentService::createCharge($this->paymentData($order));
 
             $order->tap_id = $tap['id'];
             $order->save();
@@ -141,12 +148,9 @@ class OrderController extends Controller
     }
 
 
-    private function paymentData($order, $payment_method = 'src_all')
+    private function paymentData($order)
     {
         $user = $order->user;
-        if (!in_array($payment_method, ['src_kw.knet', 'src_card', 'src_all'])) {
-            $payment_method = 'src_all';
-        }
 
         return [
             'amount' => $order->total, // Ensure this is the final amount after discount
@@ -166,7 +170,7 @@ class OrderController extends Controller
                 ],
             ],
             'source' => [
-                'id' => $payment_method,
+                'id' => 'src_all',
             ],
             'redirect' => [
                 'url' => route('orders.tap_callback'),

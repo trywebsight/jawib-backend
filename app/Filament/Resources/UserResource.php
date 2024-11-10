@@ -54,7 +54,7 @@ class UserResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->rules(['required', 'string', 'max:255']),
                 // Date of Birth Field
-                DatePicker::make('bod')
+                DatePicker::make('dob')
                     ->label(__('date of birth'))
                     ->nullable(),
                 // Gender Field

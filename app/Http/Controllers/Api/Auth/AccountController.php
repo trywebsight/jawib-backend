@@ -29,7 +29,7 @@ class AccountController extends Controller
                 'email'         => 'sometimes|email|max:255|unique:users,email,' . $user->id,
                 'password'      => 'sometimes|string',
                 'country'       => 'sometimes|nullable|string',
-                'bod'           => 'sometimes|nullable|date',
+                'dob'           => 'sometimes|nullable|date',
                 'gender'        => 'sometimes|nullable|string',
             ]);
 

@@ -4,11 +4,9 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 
-/**
- * Class TapPaymentService.
- */
 class TapPaymentService
 {
+
     const BASE_URL = "https://api.tap.company/v2/";
 
     protected static $apiKey;

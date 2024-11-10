@@ -20,7 +20,7 @@ class Package extends Model
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
+        'price' => 'float',
     ];
     protected $hidden = [
         'created_at',

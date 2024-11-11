@@ -11,6 +11,7 @@ class Question extends Model
 
     protected $fillable = [
         'question',
+        'question_media_type',
         'question_media_url',
         'answer',
         'answer_media_url',

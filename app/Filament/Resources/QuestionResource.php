@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\QuestionMediaTypeEnum;
 use App\Filament\Resources\QuestionResource\Pages;
 use App\Models\Category;
 use App\Models\Question;
@@ -65,6 +66,8 @@ class QuestionResource extends Resource
 
                                 Forms\Components\Select::make('category_id')
                                     ->relationship('category', 'title')
+                                    ->searchable()
+                                    ->preload()
                                     ->required()
                                     ->label(__('category')),
 
@@ -81,16 +84,40 @@ class QuestionResource extends Resource
                             ->maxLength(255)
                             ->label(__('question text')),
 
+                        Forms\Components\ToggleButtons::make('question_media_type')
+                            ->options(QuestionMediaTypeEnum::class)
+                            ->enum(QuestionMediaTypeEnum::class)
+                            ->default(QuestionMediaTypeEnum::TEXT)
+                            ->inline()
+                            ->inlineLabel(false)
+                            ->required()
+                            ->label(__('question media type'))
+                            ->reactive()
+                            ->disabled(fn($get) => $get('question_media_url') != null),
+
                         Forms\Components\FileUpload::make('question_media_url')
                             ->label(__('question media'))
                             ->disk('do')
                             ->directory('questions')
                             ->nullable()
-                            ->afterStateUpdated(function ($state, callable $set) {
-                                if (!$state) {
-                                    $set('question_media_url', null);
-                                }
+                            ->hidden(fn($get) => $get('question_media_type') == QuestionMediaTypeEnum::TEXT->value)
+                            ->acceptedFileTypes(fn($get) => match ($get('question_media_type')) {
+                                QuestionMediaTypeEnum::IMAGE => ['image/*'],
+                                QuestionMediaTypeEnum::VIDEO => ['video/*'],
+                                QuestionMediaTypeEnum::AUDIO => ['audio/*'],
+                                default => [],
                             }),
+                            // ->rules(
+                            //     fn($get) => $get('question_media_type') !== QuestionMediaTypeEnum::TEXT->value
+                            //         ? ['file', 'mimes:' . match ($get('question_media_type')) {
+                            //             QuestionMediaTypeEnum::IMAGE => 'jpeg,png,jpg,gif',
+                            //             QuestionMediaTypeEnum::VIDEO => 'mp4,mov,avi',
+                            //             QuestionMediaTypeEnum::AUDIO => 'mp3,wav',
+                            //             default => '',
+                            //         }]
+                            //         : ['nullable']
+                            // ),
+
                     ])->columnSpan(1),
 
                 Forms\Components\Section::make(__('answer'))

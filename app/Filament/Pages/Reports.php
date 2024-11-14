@@ -31,7 +31,7 @@ class Reports extends Page
             AudienceAnalyticsWidget::class,
             TopCategoriesSelectedChart::class,
             AgeDistributionChart::class,
-            GenderDistributionChart::class,
+            // GenderDistributionChart::class,
             // GameAnalyticsWidget::class,
 
         ];

@@ -12,8 +12,8 @@ enum QuestionMediaTypeEnum: string implements HasColor, HasIcon, HasLabel
 {
     case TEXT  = 'text';
     case IMAGE = 'image';
-    case AUDIO = 'video';
-    case VIDEO = 'audio';
+    case AUDIO = 'audio';
+    case VIDEO = 'video';
 
     public function getColor(): string|array|null
     {
@@ -43,6 +43,15 @@ enum QuestionMediaTypeEnum: string implements HasColor, HasIcon, HasLabel
             self::IMAGE => 'heroicon-c-photo',
             self::VIDEO => 'heroicon-c-video-camera',
             self::AUDIO => 'heroicon-c-speaker-wave',
+        };
+    }
+
+    public function getExtensions(): ?array
+    {
+        return match ($this) {
+            self::IMAGE => ['png', 'jpg', 'jpeg'],
+            self::VIDEO => ['mp4', 'avi', 'mov', 'mkv', 'gif'],
+            self::AUDIO => ['mp3', 'wav', 'ogg'],
         };
     }
 }

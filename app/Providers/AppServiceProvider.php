@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Admin;
+use App\Models\Question;
+use App\Observers\QuestionObserver;
 use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\URL;
@@ -32,8 +34,6 @@ class AppServiceProvider extends ServiceProvider
                     'en' => asset('flags/en.svg'),
                 ]);
         });
-        // if (env('APP_ENV') !== 'local') {
-            URL::forceScheme('https');
-        // }
+        URL::forceScheme('https');
     }
 }

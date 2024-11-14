@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\QuestionMediaTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,16 +10,10 @@ class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'question',
-        'question_media_type',
-        'question_media_url',
-        'answer',
-        'answer_media_url',
-        'level',
-        'diff',
-        'category_id',
-        'user_id',
+    protected $guarded = ['id'];
+    protected $appends = ['question_media_type'];
+    protected $casts = [
+        'options' => 'array',
     ];
 
     public function user()
@@ -29,6 +24,42 @@ class Question extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function getOptionsAttribute($value)
+    {
+        $options = [
+            'hide_media'        => false,
+            'hide_media_after'  => null,
+        ];
+        if (is_null($value)) {
+            return $options;
+        }
+        // Decode the JSON string into an array (assuming it's stored as a JSON string in the database)
+        $decodedOptions = json_decode($value, true);
+
+        // If decoding fails (i.e. value is not a valid JSON string), return the default options
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return $options;
+        }
+
+        // Ensure 'hide_media' and 'hide_media_after' are set to non-null values
+        $decodedOptions['hide_media'] = $decodedOptions['hide_media'] ?? false;
+        $decodedOptions['hide_media_after'] = $decodedOptions['hide_media_after'] ?? null;
+        // Return the final options array
+        return $decodedOptions;
+    }
+
+    public function getQuestionMediaTypeAttribute()
+    {
+        // Extract the file extension from question_media_url
+        $fileExtension = strtolower(pathinfo($this->question_media_url, PATHINFO_EXTENSION));
+        return match (true) {
+            in_array($fileExtension, QuestionMediaTypeEnum::IMAGE->getExtensions()) => QuestionMediaTypeEnum::IMAGE->value,
+            in_array($fileExtension, QuestionMediaTypeEnum::VIDEO->getExtensions()) => QuestionMediaTypeEnum::VIDEO->value,
+            in_array($fileExtension, QuestionMediaTypeEnum::AUDIO->getExtensions()) => QuestionMediaTypeEnum::AUDIO->value,
+            default => QuestionMediaTypeEnum::TEXT->value, // Default to TEXT if no match
+        };
     }
 
     // Local Scopes

@@ -19,7 +19,7 @@ class QuestionResource extends JsonResource
         return [
             'id'                    => $this->id,
             'question'              => $this->question,
-            'question_media_type'   => $this->question_media_type ?: QuestionMediaTypeEnum::TEXT->value,
+            'question_media_type'   => $this->question_media_type,
             'question_media_url'    => $this->question_media_url ? Storage::disk('do')->url($this->question_media_url) : null,
             'answer'                => $this->answer,
             'answer_media_url'      => $this->answer_media_url ? Storage::disk('do')->url($this->answer_media_url) : null,

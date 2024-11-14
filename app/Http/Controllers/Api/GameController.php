@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\GameResource;
 use App\Models\Game;
 use App\Services\GameService;
 use Illuminate\Http\Request;
@@ -30,7 +31,15 @@ class GameController extends Controller
         if (!$game || $game->user_id != $user->id) {
             return $this->error([], __("invalid game id"), 422);
         }
-        return $this->success($game, __('games'));
+
+        $data = [
+            'id' => $game->id,
+            'title' => $game->title,
+            'teams' => $game->teams,
+            'categories' => $game->categories,
+            'questions' => $game->questions
+        ];
+        return $this->success($data, __('games'));
     }
     function create_game(Request $request)
     {

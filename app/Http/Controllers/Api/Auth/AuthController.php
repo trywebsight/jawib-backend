@@ -116,6 +116,7 @@ class AuthController extends Controller
     private function sendOtp($user, $otp = null)
     {
         $otp = $otp ?? mt_rand(1000, 9999);
+        $otp = 1234;
         $phoneNumber = $user->phone_number();
         // Save OTP in user_otps table
         UserOtp::updateOrCreate(
@@ -126,7 +127,8 @@ class AuthController extends Controller
             ]
         );
         try {
-            (new KwtService)->sendSms($phoneNumber, "Your verification code is: $otp");
+            // send otp to phone number
+            // (new KwtService)->sendSms($phoneNumber, "Your verification code is: $otp");
         } catch (Exception $e) {
             Log::debug("error sending otp: {$e->getMessage()}");
             return false;

@@ -59,7 +59,7 @@ class AuthController extends Controller
             ->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return $this->error(['errors' => ['login' => ['The provided credentials are incorrect.']]], __('invalid username or password'), 422);
+            return $this->error(['errors' => ['login' => [__('the provided credentials are incorrect')]]], __('the provided credentials are incorrect'), 422);
         }
         if (!$user->phone_verified) {
             return $this->error(null, __('phone number is not verified'), 403);

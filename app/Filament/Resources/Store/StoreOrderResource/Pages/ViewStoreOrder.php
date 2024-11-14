@@ -68,7 +68,7 @@ class ViewStoreOrder extends ViewRecord
                                                 ->required(),
                                         ])
                                         ->successNotificationTitle(
-                                            __('Payment status updated successfully!')
+                                            __('payment status updated successfully!')
                                         )
                                         ->action(function (Action $action, StoreOrder $record, array $data): void {
                                             $record->update(['payment_status' => $data['payment_status']]);
@@ -93,7 +93,7 @@ class ViewStoreOrder extends ViewRecord
                                                 ->required(),
                                         ])
                                         ->successNotificationTitle(
-                                            __('Status updated successfully!')
+                                            __('status updated successfully!')
                                         )
                                         ->action(function (Action $action, StoreOrder $record, array $data): void {
                                             $record->update(['status' => $data['status']]);

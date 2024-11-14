@@ -36,41 +36,41 @@ class StoreOrderResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('id')
-                    ->label(__('Order ID'))
+                    ->label(__('order id'))
                     ->disabled(),
 
                 Forms\Components\Select::make('user_id')
-                    ->label(__('User'))
+                    ->label(__('user'))
                     ->relationship('user', 'name')
                     ->searchable()
                     ->disabled(),
 
                 Forms\Components\TextInput::make('shipping')
-                    ->label(__('Shipping'))
+                    ->label(__('shipping'))
                     ->numeric()
                     ->disabled(),
 
                 Forms\Components\TextInput::make('total')
-                    ->label(__('Total'))
+                    ->label(__('total'))
                     ->numeric()
                     ->disabled(),
 
                 Forms\Components\TextInput::make('tap_id')
-                    ->label(__('Tap ID'))
+                    ->label(__('tap id'))
                     ->disabled(),
 
                 Forms\Components\Select::make('status')
-                    ->label(__('Status'))
+                    ->label(__('status'))
                     ->options(StoreOrderStatusEnum::class)
                     ->required(),
 
                 Forms\Components\Select::make('payment_status')
-                    ->label(__('Payment Status'))
+                    ->label(__('payment status'))
                     ->options(TapPaymentStatusEnum::class)
                     ->disabled(),
 
                 Forms\Components\DateTimePicker::make('created_at')
-                    ->label(__('Created At'))
+                    ->label(__('created at'))
                     ->disabled(),
             ]);
     }
@@ -80,16 +80,16 @@ class StoreOrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label(__('Order ID'))
+                    ->label(__('order id'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label(__('User'))
+                    ->label(__('user'))
                     ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('total')
-                    ->label(__('Total'))
+                    ->label(__('total'))
                     ->money('kwd')
                     ->sortable(),
 
@@ -106,7 +106,7 @@ class StoreOrderResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('Created At'))
+                    ->label(__('created at'))
                     ->dateTime()
                     ->since()
                     ->sortable(),

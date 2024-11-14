@@ -33,27 +33,27 @@ class StoreProductResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
-                    ->label(__('Title'))
+                    ->label(__('title'))
                     ->required()
                     ->maxLength(255),
 
                 Forms\Components\Textarea::make('description')
-                    ->label(__('Description'))
+                    ->label(__('description'))
                     ->maxLength(65535),
 
                 Forms\Components\Select::make('category_id')
-                    ->label(__('Category'))
+                    ->label(__('category'))
                     ->relationship('category', 'title')
                     ->required(),
 
                 Forms\Components\FileUpload::make('image')
-                    ->label(__('Image'))
+                    ->label(__('image'))
                     ->disk('do')
                     ->directory('store/products')
                     ->image(),
 
                 Forms\Components\TextInput::make('price')
-                    ->label(__('Price'))
+                    ->label(__('price'))
                     ->required()
                     ->numeric()
                     ->prefix(__('kwd'))
@@ -70,26 +70,26 @@ class StoreProductResource extends Resource
                 Tables\Columns\ImageColumn::make('image')
                     ->disk('do')
                     ->circular()
-                    ->label(__('Image'))
+                    ->label(__('image'))
                     ->size(50),
 
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('Title'))
+                    ->label(__('title'))
                     ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('category.title')
-                    ->label(__('Category'))
+                    ->label(__('category'))
                     ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('price')
-                    ->label(__('Price'))
+                    ->label(__('price'))
                     ->money('KWD')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('Created At'))
+                    ->label(__('created at'))
                     ->dateTime()
                     ->since()
                     ->sortable(),

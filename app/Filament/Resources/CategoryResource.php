@@ -31,18 +31,24 @@ class CategoryResource extends Resource
 
     protected static ?int $navigationSort = 10;
 
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::getModel()::count();
-    // }
-    public static function getNavigationLabel(): string
+    public static function getModelLabel(): string
+    {
+        return __('category');
+    }
+
+    public static function getPluralModelLabel(): string
     {
         return __('categories');
     }
 
-    public static function getEloquentQuery(): Builder
+    public static function getNavigationLabel(): string
     {
-        return parent::getEloquentQuery()->whereNull('user_id');
+        return self::getPluralModelLabel();
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return self::getPluralModelLabel();
     }
 
     public static function form(Form $form): Form

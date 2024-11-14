@@ -22,6 +22,26 @@ class CouponResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
+    public static function getModelLabel(): string
+    {
+        return __('coupon');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('coupons');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return self::getPluralModelLabel();
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return self::getPluralModelLabel();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

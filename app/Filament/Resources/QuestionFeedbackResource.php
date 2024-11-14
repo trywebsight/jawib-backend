@@ -20,6 +20,26 @@ class QuestionFeedbackResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-m-chat-bubble-bottom-center-text';
 
+    public static function getModelLabel(): string
+    {
+        return __('qeustion feedback');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('qeustion feedbacks');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return self::getPluralModelLabel();
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return self::getPluralModelLabel();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -43,7 +63,8 @@ class QuestionFeedbackResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('question.question')->label(__('question'))
+                Tables\Columns\TextColumn::make('question.question')
+                    ->label(__('question'))
                     ->limit(30)
                     ->searchable()
                     ->tooltip(function (TextColumn $column): ?string {
@@ -54,11 +75,14 @@ class QuestionFeedbackResource extends Resource
                         // Only render the tooltip if the column content exceeds the length limit.
                         return $state;
                     }),
-                Tables\Columns\TextColumn::make('feedback')->label(__('feedback'))
+                Tables\Columns\TextColumn::make('feedback')
+                    ->label(__('feedback'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('user.name')->label(__('provided by'))
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label(__('provided by'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')->label(__('provided on'))->dateTime(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('provided on'))->dateTime(),
             ])
             ->filters([
                 //

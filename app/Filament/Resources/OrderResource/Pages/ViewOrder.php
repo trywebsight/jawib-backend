@@ -78,7 +78,7 @@ class ViewOrder extends ViewRecord
                             //                     ->required(),
                             //             ])
                             //             ->successNotificationTitle(
-                            //                 __('Status updated successfully!')
+                            //                 __('status updated successfully!')
                             //             )
                             //             ->action(function (Action $action, Order $record, array $data): void {
                             //                 $record->update(['status' => $data['status']]);
@@ -147,7 +147,7 @@ class ViewOrder extends ViewRecord
                                                 ->required(),
                                         ])
                                         ->successNotificationTitle(
-                                            __('Payment status updated successfully!')
+                                            __('payment status updated successfully!')
                                         )
                                         ->action(function (Action $action, Order $record, array $data): void {
                                             $record->update(['payment_status' => $data['payment_status']]);

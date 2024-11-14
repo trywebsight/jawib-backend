@@ -26,6 +26,26 @@ class AdminResource extends Resource
         return __('filament-shield::filament-shield.nav.group');
     }
 
+    public static function getModelLabel(): string
+    {
+        return __('admin');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admins');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return self::getPluralModelLabel();
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return self::getPluralModelLabel();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -62,6 +82,7 @@ class AdminResource extends Resource
                 Tables\Columns\TextColumn::make('email')->label(__('email'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

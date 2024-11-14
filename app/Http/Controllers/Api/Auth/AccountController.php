@@ -14,6 +14,7 @@ class AccountController extends Controller
         if (!$user) {
             return $this->error([], __('not authorized'), 403);
         }
+        $user->balance = $user->balance;
         return $this->success($user);
     }
 

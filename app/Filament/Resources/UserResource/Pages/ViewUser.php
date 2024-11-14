@@ -18,28 +18,6 @@ class ViewUser extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
-
-            // Actions\Action::make('send_credit_to_user')
-            //     ->label('Send Credit to User')
-            //     ->icon('heroicon-o-currency-dollar')
-            //     ->color('gray')
-            //     ->form([
-            //         TextInput::make('game_credits')
-            //             ->label(__('Game credits amount'))
-            //             ->inputMode('numeric') // Set input mode to numeric
-            //             ->integer()
-            //             ->required()
-            //             ->placeholder('Please provide the amount you want to credit this user.'),
-            //     ])
-            //     ->action(function (array $data) {
-
-            //         $user = $this->record;
-            //         dd($user);
-            //         Notification::make()
-            //             ->title('User Wallet Charged')
-            //             ->success()
-            //             ->send();
-            //     }),
         ];
     }
 }

@@ -33,9 +33,13 @@ class StoreCategoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')->required(),
-                Forms\Components\Textarea::make('description'),
+                Forms\Components\TextInput::make('title')
+                    ->label(__('title'))
+                    ->required(),
+                Forms\Components\Textarea::make('description')
+                    ->label(__('description')),
                 Forms\Components\FileUpload::make('image')
+                    ->label(__('image'))
                     ->disk('do')
                     ->directory('store/categories'),
             ]);
@@ -45,10 +49,14 @@ class StoreCategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\ImageColumn::make('image')->disk('do'),
-                Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('created_at')->since()->sortable(),
+                Tables\Columns\TextColumn::make('id')
+                    ->label(__('id'))->sortable(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->label(__('image'))->disk('do'),
+                Tables\Columns\TextColumn::make('title')
+                    ->label(__('title'))->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('created_at'))->since()->sortable(),
             ])
             ->filters([
                 //

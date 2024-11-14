@@ -22,8 +22,12 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
     {
         return __('settings');
     }
-    public $data = [];
+    public function getHeading(): string
+    {
+        return __('settings');
+    }
 
+    public $data = [];
     protected function getFormStatePath(): string
     {
         return 'data';
@@ -41,7 +45,7 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
         return [
             Components\Tabs::make('Settings')
                 ->tabs([
-                    Components\Tabs\Tab::make('General')
+                    Components\Tabs\Tab::make(__('general'))
                         ->schema([
                             Components\FileUpload::make('site_logo')
                                 ->label(__('logo'))
@@ -56,7 +60,7 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
                                 ->directory('settings')
                                 ->disk('do'),
                         ])->columns(2),
-                    Components\Tabs\Tab::make('Tap Payment')
+                    Components\Tabs\Tab::make(__('payment'))
                         ->schema([
                             Components\Toggle::make('test_mode')
                                 ->label(__('test mode')),
@@ -64,7 +68,7 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
                                 ->label(__('secret key'))
                                 ->columnSpanFull(),
                         ])->columns(2),
-                    Components\Tabs\Tab::make(__('Game Settings'))
+                    Components\Tabs\Tab::make(__('game settings'))
                         ->schema([
                             Components\FileUpload::make('win_sound_effect')
                                 ->label(__('win sound effect'))

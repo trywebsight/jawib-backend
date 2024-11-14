@@ -32,9 +32,24 @@ class UserResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    public static function getModelLabel(): string
+    {
+        return __('user');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('users');
+    }
+
     public static function getNavigationLabel(): string
     {
-        return __('customers');
+        return self::getPluralModelLabel();
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return self::getPluralModelLabel();
     }
 
     public static function form(Form $form): Form
@@ -59,12 +74,12 @@ class UserResource extends Resource
                     ->nullable(),
                 // Gender Field
                 Radio::make('gender')
-                    ->label(__('Gender'))
+                    ->label(__('gender'))
                     ->inline()
                     ->inlineLabel(false)
                     ->options([
-                        'male' => __('Male'),
-                        'female' => __('Female'),
+                        'male' => __('male'),
+                        'female' => __('female'),
                     ])
                     ->required(),
                 // Country Field

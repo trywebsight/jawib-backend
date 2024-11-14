@@ -24,14 +24,14 @@ class QuestionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-question-mark-circle';
 
-    public static function getNavigationLabel(): string
-    {
-        return __('questions');
-    }
-
     public static function getModelLabel(): string
     {
         return __('question');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('questions');
     }
 
     public static function getPluralModelLabel(): string
@@ -199,15 +199,6 @@ class QuestionResource extends Resource
             ->headerActions([]);
     }
 
-    public static function getRelations(): array
-    {
-        return [];
-    }
-
-    // public static function query(): Builder
-    // {
-    //     return parent::query()->with(['category']);
-    // }
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->whereNull('user_id');

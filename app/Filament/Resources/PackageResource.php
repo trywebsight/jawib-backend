@@ -20,14 +20,19 @@ class PackageResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
+    public static function getModelLabel(): string
+    {
+        return __('package');
+    }
+
     public static function getNavigationLabel(): string
     {
         return __('packages');
     }
 
-    public static function getModelLabel(): string
+    public static function getPluralModelLabel(): string
     {
-        return __('package');
+        return __('packages');
     }
 
     public static function getPluralLabel(): string
@@ -39,22 +44,27 @@ class PackageResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')->label(__('title'))
+                Forms\Components\TextInput::make('title')
+                    ->label(__('title'))
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('games_count')->label(__('games count'))
+                Forms\Components\TextInput::make('games_count')
+                    ->label(__('games count'))
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('price')->label(__('price'))
+                Forms\Components\TextInput::make('price')
+                    ->label(__('price'))
                     ->required()
                     ->numeric()
                     ->prefix(__('kwd')),
-                Forms\Components\FileUpload::make('image')->label(__('image'))
+                Forms\Components\FileUpload::make('image')
+                    ->label(__('image'))
                     ->directory('packages')
                     ->image()
                     ->disk('do')
                     ->visibility('public'),
-                Forms\Components\Textarea::make('content')->label(__('description'))
+                Forms\Components\Textarea::make('content')
+                    ->label(__('description'))
                     ->columnSpanFull(),
             ]);
     }
@@ -64,13 +74,16 @@ class PackageResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('title')->label(__('title'))
+                Tables\Columns\TextColumn::make('title')
+                    ->label(__('title'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('games_count')->label(__('games_count'))
+                Tables\Columns\TextColumn::make('games_count')
+                    ->label(__('games_count'))
                     ->numeric()
                     ->badge()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('price')->label(__('price'))
+                Tables\Columns\TextColumn::make('price')
+                    ->label(__('price'))
                     ->money('KWD')
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('image')

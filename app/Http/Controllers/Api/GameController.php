@@ -53,7 +53,7 @@ class GameController extends Controller
         $user = auth('sanctum')->user();
         try {
             $game = $this->gameService->createGame($user, $request->all());
-            return $this->success(['game' => $game], __('Game created successfully'));
+            return $this->success(['game' => $game], __('game created successfully'));
         } catch (\Exception $e) {
             return $this->error(['errors' => [$e->getMessage()]], $e->getMessage(), 400);
         }

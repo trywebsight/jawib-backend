@@ -51,7 +51,7 @@ class OrderController extends Controller
             if ($couponCode) {
                 $coupon = $this->couponService->getCouponByCode($couponCode);
                 if (!$coupon) {
-                    return $this->error(['coupon' => __('invalid or expired coupon')], __('Invalid coupon.'));
+                    return $this->error(['coupon' => __('invalid or expired coupon')], __('invalid coupon.'));
                 }
             }
 
@@ -93,7 +93,7 @@ class OrderController extends Controller
             return $this->success($order->load('packages'));
         } catch (\Throwable $e) {
             Log::debug("Failed order", [$e->getMessage()]);
-            return $this->error(['errors' => [$e->getMessage()]], __('Failed to create order. Please try again.'));
+            return $this->error(['errors' => [$e->getMessage()]], __('failed to create order. please try again.'));
         }
     }
 

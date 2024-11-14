@@ -19,23 +19,50 @@ class SuggestedQuestionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
 
+    public static function getModelLabel(): string
+    {
+        return __('suggested question');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('suggested questions');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return self::getPluralModelLabel();
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return self::getPluralModelLabel();
+    }
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('question')->limit(50),
+                Tables\Columns\TextColumn::make('id')
+                    ->label(__('id')),
+                Tables\Columns\TextColumn::make('question')
+                    ->label(__('question'))
+                    ->limit(50),
                 Tables\Columns\TextColumn::make('category.title')
-                    ->label('Category')
+                    ->label(__('category'))
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('user.name')->label('Suggested By'),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label(__('suggested by')),
                 Tables\Columns\ImageColumn::make('images')
+                    ->label(__('images'))
                     ->circular()
                     ->disk('do')
                     ->stacked()
                     ->toggleable(),
                 // Tables\Columns\ImageColumn::make('images'),
-                Tables\Columns\TextColumn::make('created_at')->label('Created')->since(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('created at'))
+                    ->since(),
             ])
             ->filters([
                 //

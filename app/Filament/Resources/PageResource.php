@@ -75,11 +75,11 @@ class PageResource extends Resource
                     ->label(__('is published'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('created_at'))
+                    ->label(__('created at'))
                     ->dateTime()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('updated_at'))
+                    ->label(__('updated at'))
                     ->dateTime()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

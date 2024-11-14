@@ -27,14 +27,14 @@ class CreateGame extends CreateRecord
             ]);
 
             Notification::make()
-                ->title('Game created successfully')
+                ->title(__('game created successfully'))
                 ->success()
                 ->send();
 
             return $game;
         } catch (\Exception $e) {
             Notification::make()
-                ->title('Error creating game')
+                ->title(__('error creating game'))
                 ->body($e->getMessage())
                 ->danger()
                 ->send();

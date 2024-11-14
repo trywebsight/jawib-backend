@@ -10,6 +10,7 @@ use App\Filament\Widgets\CustomReportsWidget;
 use App\Filament\Widgets\GenderDistributionChart;
 use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\TopCategoriesSelectedChart;
+use Illuminate\Contracts\Support\Htmlable;
 
 class Reports extends Page
 {
@@ -17,12 +18,14 @@ class Reports extends Page
 
     protected static string $view = 'filament.pages.reports';
 
-    protected static ?string $navigationLabel = 'Reports';
-
-    protected static ?string $title = 'Analytics Reports';
-
-    protected ?string $heading = 'Reports';
-
+    public static function getNavigationLabel(): string
+    {
+        return __('reports');
+    }
+    public function getHeading(): string
+    {
+        return __('reports');
+    }
 
     protected function getHeaderWidgets(): array
     {

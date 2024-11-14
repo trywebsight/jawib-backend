@@ -20,22 +20,45 @@ class GameResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-play-circle';
 
+    public static function getModelLabel(): string
+    {
+        return __('game');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('games');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('games');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('games');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
+                    ->label(__('user'))
                     ->relationship('user', 'name')
                     ->searchable()
                     ->preload()
                     ->required(),
                 Forms\Components\TextInput::make('title')
+                    ->label(__('title'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Repeater::make('teams')
+                    ->label(__('teams'))
                     ->schema([
                         Forms\Components\TextInput::make('name')
-                            ->label('Team Name')
+                            ->label(__('team name'))
                             ->required(),
                     ])
                     ->minItems(1)
@@ -49,6 +72,7 @@ class GameResource extends Resource
                 //     ->rules(['array', 'min:2', 'max:4'])
                 //     ->required(),
                 Forms\Components\Select::make('categories')
+                    ->label(__('categories'))
                     ->multiple()
                     ->options(Category::pluck('title', 'id'))
                     ->required()
@@ -62,8 +86,10 @@ class GameResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
+                    ->label(__('user'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('title')
+                    ->label(__('title'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('teams')
                     ->label(__('teams'))
@@ -74,9 +100,11 @@ class GameResource extends Resource
                     ->color('info')
                     ->listWithLineBreaks(),
                 Tables\Columns\TextColumn::make('categories.title')
+                    ->label(__('category'))
                     ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('created at'))
                     ->dateTime()
                     ->sortable(),
             ])

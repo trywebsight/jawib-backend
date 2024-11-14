@@ -20,7 +20,7 @@ class ApiLocalization
             /**
              * If Accept-Language header found then set it to the default locale
              */
-            App::setLocale($request->header("Accept-Language"));
+            App::setLocale($request->header("Accept-Language") ?: 'ar');
         }
         return $next($request);
     }

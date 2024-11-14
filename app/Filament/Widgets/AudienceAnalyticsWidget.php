@@ -18,7 +18,7 @@ class AudienceAnalyticsWidget extends BaseWidget
         $total = Order::where('payment_status', TapPaymentStatusEnum::CAPTURED->value)
             ->sum('total');
 
-        return number_format($total, 2) . ' ' . __('KD');
+        return number_format($total, 2) . ' ' . __('kd');
     }
     private function earningsTrend()
     {
@@ -74,25 +74,25 @@ class AudienceAnalyticsWidget extends BaseWidget
 
         if ($topUser) {
             $topUserName = $topUser['name'];
-            $totalSpent = number_format($topUser['total_spent'], 2) . ' ' . __('KD');
+            $totalSpent = number_format($topUser['total_spent'], 2) . ' ' . __('kd');
         } else {
-            $topUserName = __('No Data');
+            $topUserName = __('no data');
             $totalSpent = '';
         }
 
         return [
-            Stat::make(__('Total Earnings'), $this->totalEarning())
-                ->description(__('Total Earnings'))
+            Stat::make(__('total earnings'), $this->totalEarning())
+                ->description(__('total earnings'))
                 ->descriptionIcon('heroicon-o-currency-dollar')
                 ->chart($this->earningsTrend())
                 ->color('success'),
 
-            Stat::make(__('Top User by Purchase'), $topUserName)
+            Stat::make(__('top user by purchase'), $topUserName)
                 ->description($totalSpent . ' ' . __('total spent'))
                 ->descriptionIcon('heroicon-m-currency-dollar'),
 
             Stat::make(__(''), Game::count())
-                ->description(__('Number of games played'))
+                ->description(__('number of games played'))
                 // ->descriptionIcon('heroicon-o-currency-dollar')
                 // ->chart($this->earningsTrend()) // Example data for the chart, replace with real data if needed
                 ->color('success'),

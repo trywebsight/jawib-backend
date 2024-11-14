@@ -16,12 +16,7 @@ class ApiLocalization
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->hasHeader("Accept-Language")) {
-            /**
-             * If Accept-Language header found then set it to the default locale
-             */
-            App::setLocale($request->header("Accept-Language") ?: 'ar');
-        }
+        App::setLocale($request->hasHeader("Accept-Language") ? $request->header("Accept-Language") : 'ar');
         return $next($request);
     }
 }

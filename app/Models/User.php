@@ -64,12 +64,13 @@ class User extends Authenticatable implements Wallet, Customer
     {
         $points = $this->points;
         $ranks = [
-            50 => 'master',
-            40 => 'ninja',
-            30 => 'senior',
-            20 => 'mid-senior',
-            10 => 'junior',
-            0  => 'noobie',
+            60 => 'immportal',
+            50 => 'diamond',
+            40 => 'platinum',
+            30 => 'gold',
+            20 => 'silver',
+            10 => 'bronze',
+            0  => 'iron',
         ];
 
         foreach ($ranks as $p => $rank) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,8 +15,8 @@ class AccountController extends Controller
         if (!$user) {
             return $this->error([], __('not authorized'), 403);
         }
-        $user->balance = $user->balance;
-        return $this->success($user);
+        // $user->games_count = $user->games?->count();
+        return $this->success((new UserResource($user)));
     }
 
     // update account

@@ -26,10 +26,10 @@ class AccountController extends Controller
             $user = $request->user('sanctum');
             $validator = Validator::make($request->all(), [
                 'name'          => 'sometimes|string|max:255',
-                'country_code'  => 'sometimes|integer|digits_between:1,4',
-                'phone'         => 'sometimes|string|max:255|unique:users,phone,' . $user->id,
+                // 'country_code'  => 'sometimes|integer|digits_between:1,4',
+                // 'phone'         => 'sometimes|string|max:255|unique:users,phone,' . $user->id,
                 'email'         => 'sometimes|email|max:255|unique:users,email,' . $user->id,
-                'password'      => 'sometimes|string',
+                // 'password'      => 'sometimes|string',
                 'country'       => 'sometimes|nullable|string',
                 'dob'           => 'sometimes|nullable|date',
                 'gender'        => 'sometimes|nullable|string',

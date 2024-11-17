@@ -74,9 +74,9 @@ class AuthController extends Controller
         try {
             $user = auth('sanctum')->user();
             $user->currentAccessToken()->delete();
-            return $this->success(null, 'Logged out successfully');
+            return $this->success(null, __('logged out successfully'));
         } catch (\Throwable $th) {
-            return $this->success(null, 'You are Logged out already');
+            return $this->success(null, __('you are logged out already'));
         }
     }
 
@@ -109,7 +109,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
         return $this->success([
             'token' => $token,
-            'user' => $user
+            'user' => new UserResource($user),
         ], __('phone number verified successfully'));
     }
 

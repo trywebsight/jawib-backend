@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Order routes
     Route::post('/orders/create',   [OrderController::class, 'create']);
     Route::get('/orders/callback',  [OrderController::class, 'callback'])->name('orders.tap_callback')->withoutMiddleware('auth:sanctum');
+    Route::get('/orders/payment',   [OrderController::class, 'payment_status'])->name('orders.tap_payment_status')->withoutMiddleware('auth:sanctum');
     Route::get('/orders/{id}',      [OrderController::class, 'show']);
     Route::get('/my-orders',        [OrderController::class, 'myOrders']);
 

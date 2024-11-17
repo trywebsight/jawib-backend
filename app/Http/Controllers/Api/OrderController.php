@@ -112,6 +112,7 @@ class OrderController extends Controller
         }
 
         if ($order->payment_status === TapPaymentStatusEnum::CAPTURED->value) {
+            return redirect()->route('orders.tap_payment_status', ['status' => 'success']);
             return $this->success([], __("payment already processed"));
         }
 
@@ -135,9 +136,24 @@ class OrderController extends Controller
             });
 
             $order->user->deposit($totalCredits, ['description' => 'package purchase', 'order_id' => $order->id]);
+
+            return redirect()->route('orders.tap_payment_status', ['status' => 'success']);
             return $this->success([], __('paid successfully'));
         }
+        return redirect()->route('orders.tap_payment_status', ['status' => 'failed']);
         return $this->error([], __("payment failed"));
+    }
+
+    public function payment_status(Request $request)
+    {
+        // Retrieve the payment status parameter from the URL
+        $paymentStatus = $request->query('status');
+
+        if ($paymentStatus == 'success') {
+            return $this->success([], __('order paid successfully!'), 201);
+        } else {
+            return $this->error([], __('payment was not successful'), 400);
+        }
     }
 
 

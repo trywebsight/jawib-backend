@@ -99,6 +99,8 @@ class ForgotPasswordController extends Controller
         $user->password = bcrypt($newPassword);
         $user->save();
 
+        $userOtp->delete();
+
         return $this->success([], __('password has been reset successfully'), 200);
     }
 }

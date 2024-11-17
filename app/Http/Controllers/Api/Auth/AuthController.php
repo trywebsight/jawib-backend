@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserOtp;
@@ -41,7 +42,7 @@ class AuthController extends Controller
 
         $this->sendOtp($user);
 
-        return $this->success(['user' => $user], __('user created successfully') . " " . __('please verify your phone number'), 201);
+        return $this->success(['user' => new UserResource($user)], __('user created successfully') . " " . __('please verify your phone number'), 201);
     }
 
     // LOGIN
@@ -64,7 +65,7 @@ class AuthController extends Controller
         if (!$user->phone_verified) {
             return $this->error(null, __('phone number is not verified'), 403);
         }
-        return $this->success(['user' => $user, 'token' => $user->createToken('authtoken')->plainTextToken]);
+        return $this->success(['user' => new UserResource($user), 'token' => $user->createToken('authtoken')->plainTextToken]);
     }
 
     // LOGOUT

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 {
@@ -31,7 +32,10 @@ class Category extends Model
         return $this->belongsToMany(Game::class, 'game_categories');
     }
 
+    public function getImageAttribute($value) {
+        return $value ? Storage::disk('do')->url($value) : null;
 
+    }
     // Local Scopes
     public function scopeSystem($query)
     {

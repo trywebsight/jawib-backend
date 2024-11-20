@@ -80,4 +80,54 @@ class GameService
             }
         }
     }
+
+    public function getGame(Game $game)
+    {
+        $levels = [
+            1 => __('200'),
+            2 => __('400'),
+            3 => __('600')
+        ];
+
+        $categories = $game->categories->map(function ($category) use ($game, $levels) {
+            // Dynamically build questions by levels
+            $questionsByLevel = [];
+
+            foreach ($levels as $level => $label) {
+                $questionsByLevel[$label] = $game->questions
+                    ->where('category_id', $category->id)
+                    ->where('level', $level)
+                    ->map(function ($question) {
+                        return [
+                            'id' => $question->id,
+                            'question' => $question->question,
+                            'question_media_url' => $question->question_media_url,
+                            'answer' => $question->answer,
+                            'answer_media_url' => $question->answer_media_url,
+                            'level' => $question->level,
+                            'diff' => $question->diff,
+                            'options' => $question->options,
+                            'question_media_type' => $question->question_media_type,
+                        ];
+                    })
+                    ->values();
+            }
+
+            return [
+                'id' => $category->id,
+                'title' => $category->title,
+                'image' => $category->image,
+                'questions' => $questionsByLevel,
+            ];
+        });
+
+        $data = [
+            'id' => $game->id,
+            'title' => $game->title,
+            'teams' => $game->teams,
+            'categories' => $categories,
+        ];
+
+        return $data;
+    }
 }

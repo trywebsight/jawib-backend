@@ -27,20 +27,18 @@ class GameController extends Controller
     {
         $user = auth('sanctum')->user();
         $game = Game::find($id);
-        // make sure game is exist
+
+        // Ensure the game exists and belongs to the authenticated user
         if (!$game || $game->user_id != $user->id) {
             return $this->error([], __("invalid game id"), 422);
         }
 
-        $data = [
-            'id' => $game->id,
-            'title' => $game->title,
-            'teams' => $game->teams,
-            'categories' => $game->categories,
-            'questions' => $game->questions
-        ];
+        // Format the data
+        $data = $this->gameService->getGame($game);
+
         return $this->success($data, __('games'));
     }
+
     function create_game(Request $request)
     {
 

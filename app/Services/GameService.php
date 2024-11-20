@@ -34,7 +34,7 @@ class GameService
             $this->attachCategoriesToGame($game, $selectedCategories);
             $this->attachQuestionsToGame($game, $selectedCategories, $user);
 
-            $user->withdraw(1, ['description' => 'game creation', 'game_id' => $game->id]);
+            $user->withdraw(1, ['description' => 'game creation #' . $game->id, 'game_id' => $game->id]);
             // $user->withdraw(1);
 
             DB::commit();
@@ -62,19 +62,19 @@ class GameService
             for ($level = 1; $level <= 3; $level++) {
                 $questions = Question::where('category_id', $categoryId)
                     ->where('level', $level)
-                    ->whereNotIn('id', function ($query) use ($user) {
-                        $query->select('question_id')
-                            ->from('game_questions')
-                            ->join('games', 'games.id', '=', 'game_questions.game_id')
-                            ->where('games.user_id', $user->id);
-                    })
+                    // ->whereNotIn('id', function ($query) use ($user) {
+                    //     $query->select('question_id')
+                    //         ->from('game_questions')
+                    //         ->join('games', 'games.id', '=', 'game_questions.game_id')
+                    //         ->where('games.user_id', $user->id);
+                    // })
                     ->inRandomOrder()
                     ->take($questionsPerLevel)
                     ->get();
 
-                if ($questions->count() < $questionsPerLevel) {
-                    throw new \Exception("Not enough unique questions for category {$category->title} at level {$level}");
-                }
+                // if ($questions->count() < $questionsPerLevel) {
+                    // throw new \Exception("Not enough unique questions for category {$category->title} at level {$level}");
+                // }
 
                 $game->questions()->attach($questions->pluck('id'));
             }

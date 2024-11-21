@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Auth\SocialAuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\GameController;
+use App\Http\Controllers\Api\GameProgressController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\PackagePaymentController;
@@ -50,6 +51,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/games/my-games',   [GameController::class, 'my_games']);
     Route::post('/games/create',    [GameController::class, 'create_game']);
     Route::get('/games/{id}',       [GameController::class, 'get_game']);
+
+    // Game progress
+    Route::get('/game-progress/{id}',   [GameProgressController::class, 'show']);
+    Route::post('/game-progress',  [GameProgressController::class, 'store']);
+
     // VAR - question feedback
     Route::post('/question-feedback', [QuestionFeedbackController::class, 'feedback']);
     // Order routes

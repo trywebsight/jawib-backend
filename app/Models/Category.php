@@ -32,10 +32,6 @@ class Category extends Model
         return $this->belongsToMany(Game::class, 'game_categories');
     }
 
-    public function getImageAttribute($value) {
-        return $value ? Storage::disk('do')->url($value) : null;
-
-    }
     // Local Scopes
     public function scopeSystem($query)
     {

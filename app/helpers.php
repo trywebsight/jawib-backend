@@ -6,7 +6,7 @@ use App\Models\Setting;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Storage;
 
 if (!function_exists('clear_cache')) {
     function clear_cache($key = null)
@@ -85,5 +85,17 @@ if (!function_exists('email_to_username')) {
 
             return $username;
         }
+    }
+}
+
+if (!function_exists('media_url')) {
+    function media_url($path)
+    {
+        if ($path) {
+            return is_string($path) && Str::startsWith($path, ['http://', 'https://'])
+                ? $path
+                : Storage::disk('do')->url($path);
+        }
+        return $path;
     }
 }

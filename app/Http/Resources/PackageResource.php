@@ -20,7 +20,7 @@ class PackageResource extends JsonResource
             'title'             => $this->title,
             'gamesCount'        => $this->games_count,
             'price'             => $this->price,
-            'image'             => Storage::disk('do')->url($this->image),
+            'image'             => media_url($this->image),
             'content'           => $this->content,
         ];
     }

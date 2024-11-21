@@ -52,19 +52,17 @@ class Question extends Model
 
     public function getQuestionMediaTypeAttribute()
     {
-        // Extract the file extension from question_media_url
-        $fileExtension = strtolower(pathinfo($this->question_media_url, PATHINFO_EXTENSION));
-        return match (true) {
-            in_array($fileExtension, QuestionMediaTypeEnum::IMAGE->getExtensions()) => QuestionMediaTypeEnum::IMAGE->value,
-            in_array($fileExtension, QuestionMediaTypeEnum::VIDEO->getExtensions()) => QuestionMediaTypeEnum::VIDEO->value,
-            in_array($fileExtension, QuestionMediaTypeEnum::AUDIO->getExtensions()) => QuestionMediaTypeEnum::AUDIO->value,
-            default => QuestionMediaTypeEnum::TEXT->value, // Default to TEXT if no match
-        };
+        return $this->checkMediaType($this->question_media_url);
     }
     public function getAnswerMediaTypeAttribute()
     {
+        return $this->checkMediaType($this->answer_media_url);
+    }
+
+    private function checkMediaType($link)
+    {
         // Extract the file extension from question_media_url
-        $fileExtension = strtolower(pathinfo($this->answer_media_url, PATHINFO_EXTENSION));
+        $fileExtension = strtolower(pathinfo($link, PATHINFO_EXTENSION));
         return match (true) {
             in_array($fileExtension, QuestionMediaTypeEnum::IMAGE->getExtensions()) => QuestionMediaTypeEnum::IMAGE->value,
             in_array($fileExtension, QuestionMediaTypeEnum::VIDEO->getExtensions()) => QuestionMediaTypeEnum::VIDEO->value,

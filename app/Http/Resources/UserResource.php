@@ -20,7 +20,7 @@ class UserResource extends JsonResource
             'name'                  => $this->name,
             'username'              => $this->username,
             'email'                 => $this->email,
-            'avatar'                => $this->avatar ? Storage::disk('do')->url($this->avatar) : null,
+            'avatar'                => media_url($this->avatar),
             'country_code'          => $this->country_code,
             'phone'                 => $this->phone,
             'points'                => $this->points,

@@ -95,10 +95,10 @@ class GameService
                         return [
                             'id' => $question->id,
                             'question' => $question->question,
-                            'question_media_url' => $question->question_media_url,
+                            'question_media_url' => media_url($question->question_media_url),
                             'question_media_type' => $question->question_media_type,
                             'answer' => $question->answer,
-                            'answer_media_url' => $question->answer_media_url,
+                            'answer_media_url' => media_url($question->answer_media_url),
                             'answer_media_type' => $question->answer_media_type,
                             'level' => $question->level,
                             'diff' => $question->diff,
@@ -111,7 +111,7 @@ class GameService
             return [
                 'id' => $category->id,
                 'title' => $category->title,
-                'image' => $category->image,
+                'image' => media_url($category->image),
                 'questions' => $questionsByLevel,
             ];
         });
@@ -137,7 +137,7 @@ class GameService
                         return [
                             'id' => $cat->id,
                             'title' => $cat->title,
-                            'image' => $cat->image,
+                            'image' => media_url($cat->image),
                         ];
                     })
                 ];

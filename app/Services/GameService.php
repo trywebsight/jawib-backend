@@ -62,18 +62,12 @@ class GameService
             for ($level = 1; $level <= 3; $level++) {
                 $questions = Question::where('category_id', $categoryId)
                     ->where('level', $level)
-                    // ->whereNotIn('id', function ($query) use ($user) {
-                    //     $query->select('question_id')
-                    //         ->from('game_questions')
-                    //         ->join('games', 'games.id', '=', 'game_questions.game_id')
-                    //         ->where('games.user_id', $user->id);
-                    // })
                     ->inRandomOrder()
                     ->take($questionsPerLevel)
                     ->get();
 
                 // if ($questions->count() < $questionsPerLevel) {
-                    // throw new \Exception("Not enough unique questions for category {$category->title} at level {$level}");
+                // throw new \Exception("Not enough unique questions for category {$category->title} at level {$level}");
                 // }
 
                 $game->questions()->attach($questions->pluck('id'));
@@ -102,12 +96,13 @@ class GameService
                             'id' => $question->id,
                             'question' => $question->question,
                             'question_media_url' => $question->question_media_url,
+                            'question_media_type' => $question->question_media_type,
                             'answer' => $question->answer,
                             'answer_media_url' => $question->answer_media_url,
+                            'answer_media_type' => $question->answer_media_type,
                             'level' => $question->level,
                             'diff' => $question->diff,
                             'options' => $question->options,
-                            'question_media_type' => $question->question_media_type,
                         ];
                     })
                     ->values();
@@ -129,5 +124,29 @@ class GameService
         ];
 
         return $data;
+    }
+
+    public function gamesHistory(User $user)
+    {
+        try {
+            $games = $user->games->map(function ($game) {
+                return [
+                    'id' => $game->id,
+                    'title' => $game->title,
+                    'selected_categories' => $game->categories->map(function ($cat) {
+                        return [
+                            'id' => $cat->id,
+                            'title' => $cat->title,
+                            'image' => $cat->image,
+                        ];
+                    })
+                ];
+            });
+
+            return $games;
+        } catch (\Throwable $th) {
+            logger()->error('error in getting user gamesHistory: ', [$th->getMessage()]);
+            return [];
+        }
     }
 }

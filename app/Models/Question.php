@@ -11,7 +11,7 @@ class Question extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $appends = ['question_media_type'];
+    protected $appends = ['question_media_type', 'answer_media_type'];
     protected $casts = [
         'options' => 'array',
     ];
@@ -54,6 +54,17 @@ class Question extends Model
     {
         // Extract the file extension from question_media_url
         $fileExtension = strtolower(pathinfo($this->question_media_url, PATHINFO_EXTENSION));
+        return match (true) {
+            in_array($fileExtension, QuestionMediaTypeEnum::IMAGE->getExtensions()) => QuestionMediaTypeEnum::IMAGE->value,
+            in_array($fileExtension, QuestionMediaTypeEnum::VIDEO->getExtensions()) => QuestionMediaTypeEnum::VIDEO->value,
+            in_array($fileExtension, QuestionMediaTypeEnum::AUDIO->getExtensions()) => QuestionMediaTypeEnum::AUDIO->value,
+            default => QuestionMediaTypeEnum::TEXT->value, // Default to TEXT if no match
+        };
+    }
+    public function getAnswerMediaTypeAttribute()
+    {
+        // Extract the file extension from question_media_url
+        $fileExtension = strtolower(pathinfo($this->answer_media_url, PATHINFO_EXTENSION));
         return match (true) {
             in_array($fileExtension, QuestionMediaTypeEnum::IMAGE->getExtensions()) => QuestionMediaTypeEnum::IMAGE->value,
             in_array($fileExtension, QuestionMediaTypeEnum::VIDEO->getExtensions()) => QuestionMediaTypeEnum::VIDEO->value,

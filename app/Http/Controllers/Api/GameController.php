@@ -20,7 +20,7 @@ class GameController extends Controller
     function my_games(Request $request)
     {
         $user = auth('sanctum')->user();
-        $games = $user->games;
+        $games = $this->gameService->gamesHistory($user);
         return $this->success($games, __('games'));
     }
     function get_game($id)

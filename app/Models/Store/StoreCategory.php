@@ -23,12 +23,12 @@ class StoreCategory extends Model
     ];
 
 
-    public function getImageAttribute($value)
-    {
-        if ($value) {
-            return Storage::disk('do')->url($value);
-        }
-    }
+    // public function getImageAttribute($value)
+    // {
+    //     if ($value) {
+    //         return Storage::disk('do')->url($value);
+    //     }
+    // }
     public function products()
     {
         return $this->hasMany(StoreProduct::class, 'category_id');

@@ -30,12 +30,12 @@ class StoreProduct extends Model
     ];
 
 
-    public function getImageAttribute($value)
-    {
-        if ($value) {
-            return Storage::disk('do')->url($value);
-        }
-    }
+    // public function getImageAttribute($value)
+    // {
+    //     if ($value) {
+    //         return Storage::disk('do')->url($value);
+    //     }
+    // }
 
     public function category()
     {

@@ -11,6 +11,7 @@ use App\Jobs\UserGetCreditJob;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -20,6 +21,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -110,6 +112,9 @@ class UserResource extends Resource
                 Toggle::make('phone_verified')
                     ->label(__('phone verified'))
                     ->default(true),
+                // avatar Field
+                FileUpload::make('avatar')->label(__('avatar'))
+                    ->disk('do')->directory('avatars')->image()->imageEditor()->avatar(),
             ]);
     }
 
@@ -117,6 +122,9 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('avatar')->label(__('avatar'))
+                    ->circular()
+                    ->disk('do'),
                 TextColumn::make('name')->label(__('name')),
                 TextColumn::make('username')->label(__('username')),
                 TextColumn::make('email')->label(__('email')),

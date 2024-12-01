@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
@@ -26,28 +27,28 @@ class AccountController extends Controller
             $user = $request->user('sanctum');
             $validator = Validator::make($request->all(), [
                 'name'          => 'sometimes|string|max:255',
-                // 'country_code'  => 'sometimes|integer|digits_between:1,4',
-                // 'phone'         => 'sometimes|string|max:255|unique:users,phone,' . $user->id,
                 'email'         => 'sometimes|email|max:255|unique:users,email,' . $user->id,
-                // 'password'      => 'sometimes|string',
                 'country'       => 'sometimes|nullable|string',
                 'dob'           => 'sometimes|nullable|date',
                 'gender'        => 'sometimes|nullable|string',
+                'avatar'        => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
             if ($validator->fails()) {
                 return $this->error(['errors' => $validator->errors()], $validator->errors()->first(), 422);
             }
 
-            // Get the validated data
             $validatedData = $validator->validated();
 
-            // Hash the password if it's present in the request
             if (isset($validatedData['password'])) {
                 $validatedData['password'] = bcrypt($validatedData['password']);
             }
 
-            // Update the user's information
+            if ($request->hasFile('avatar')) {
+                $avatarPath = $request->file('avatar')->store('avatars', 'do');
+                $validatedData['avatar'] = $avatarPath;
+            }
+
             $user->update($validatedData);
 
             return $this->success($user, __('updated successfully'));

@@ -40,7 +40,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('/social/{provider}/callback',   [SocialAuthController::class, 'callback']);
     // user data
     Route::get('/user',                         [AccountController::class, 'user']);
-    Route::put('/user',                         [AccountController::class, 'updateAccount']);
+    Route::post('/user',                        [AccountController::class, 'updateAccount']);
 });
 
 

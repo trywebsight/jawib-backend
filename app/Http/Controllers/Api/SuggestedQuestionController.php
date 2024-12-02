@@ -94,7 +94,8 @@ class SuggestedQuestionController extends Controller
                 ],
                 'answer' => 'nullable|string',
                 'images' => 'nullable|array',
-                'images.*' => 'string|regex:/^data:image\/[a-zA-Z]+;base64,/', // Validate base64 images
+                // 'images.*' => 'string|regex:/^data:image\/[a-zA-Z]+;base64,/', // Validate base64 images
+                'images.*' => 'string', // Validate base64 images
             ]);
         } catch (ValidationException $e) {
             return $this->error($e->errors(), $e->getMessage(), 422);

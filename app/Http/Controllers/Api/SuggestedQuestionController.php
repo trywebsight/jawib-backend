@@ -21,20 +21,70 @@ class SuggestedQuestionController extends Controller
 
 
     // Store a newly created resource in storage.
+    // public function store(Request $request)
+    // {
+    //     Log::channel('suggested-question')->info('Received request data:', [
+    //         'isJson' => $request->isJson(),
+    //         'all' => $request->all(),
+    //         'files' => $request->allFiles(),
+    //         'headers' => $request->headers->all(),
+    //         'content-type' => $request->header('Content-Type'),
+    //     ]);
+
+    //     if ($request->isJson()) {
+    //         return $this->error('Invalid Content-Type. Use multipart/form-data for file uploads.', 415);
+    //     }
+
+    //     try {
+    //         $validatedData = $request->validate([
+    //             'question' => 'required|string',
+    //             'category_id' => [
+    //                 'nullable',
+    //                 Rule::exists('categories', 'id')->whereNull('user_id'),
+    //             ],
+    //             'answer' => 'nullable|string',
+    //             'images' => 'nullable|array',
+    //             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //         ]);
+    //     } catch (ValidationException $e) {
+    //         return $this->error($e->errors(), $e->getMessage(), 422);
+    //     }
+
+
+    //     $suggestedQuestion = SuggestedQuestion::firstOrCreate([
+    //         'question'    => $request->question,
+    //         'user_id'     => $request->user()->id,
+    //     ], [
+    //         'category_id' => $request->category_id,
+    //         'answer'      => $request->answer,
+    //         // 'images'      => $imagePaths,
+    //     ]);
+
+    //     if (empty($suggestedQuestion->images)) {
+    //         // Handle image uploads
+    //         $imagePaths = [];
+    //         if ($request->hasFile('images')) {
+    //             foreach ($request->file('images') as $image) {
+    //                 // Store the image on the 'do' disk in the 'suggested-questions' folder
+    //                 $path = $image->store('suggested-questions', 'do');
+    //                 // Generate a URL for the stored image
+    //                 $url = Storage::disk('do')->url($path);
+    //                 $imagePaths[] = $url;
+    //             }
+    //         }
+    //         $suggestedQuestion->images = $imagePaths;
+    //         $suggestedQuestion->save();
+    //     }
+
+    //     return $this->success($suggestedQuestion, __('thank you for your suggestion'), 201);
+    // }
     public function store(Request $request)
     {
         Log::channel('suggested-question')->info('Received request data:', [
             'isJson' => $request->isJson(),
-            'all' => $request->all(),
-            'files' => $request->allFiles(),
+            'request->all' => $request->all(),
             'headers' => $request->headers->all(),
-            'content-type' => $request->header('Content-Type'),
         ]);
-
-        if ($request->isJson()) {
-            return $this->error('Invalid Content-Type. Use multipart/form-data for file uploads.', 415);
-        }
-
         try {
             $validatedData = $request->validate([
                 'question' => 'required|string',
@@ -44,12 +94,11 @@ class SuggestedQuestionController extends Controller
                 ],
                 'answer' => 'nullable|string',
                 'images' => 'nullable|array',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'images.*' => 'string|regex:/^data:image\/[a-zA-Z]+;base64,/', // Validate base64 images
             ]);
         } catch (ValidationException $e) {
             return $this->error($e->errors(), $e->getMessage(), 422);
         }
-
 
         $suggestedQuestion = SuggestedQuestion::firstOrCreate([
             'question'    => $request->question,
@@ -57,21 +106,29 @@ class SuggestedQuestionController extends Controller
         ], [
             'category_id' => $request->category_id,
             'answer'      => $request->answer,
-            // 'images'      => $imagePaths,
         ]);
 
-        if (empty($suggestedQuestion->images)) {
-            // Handle image uploads
+        if (empty($suggestedQuestion->images) && $request->has('images')) {
             $imagePaths = [];
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    // Store the image on the 'do' disk in the 'suggested-questions' folder
-                    $path = $image->store('suggested-questions', 'do');
-                    // Generate a URL for the stored image
-                    $url = Storage::disk('do')->url($path);
-                    $imagePaths[] = $url;
-                }
+            foreach ($request->images as $base64Image) {
+                // Remove data:image/jpeg;base64, from the base64 string
+                $image_parts = explode(";base64,", $base64Image);
+                $image_type_aux = explode("image/", $image_parts[0]);
+                $image_type = $image_type_aux[1];
+                $image_base64 = base64_decode($image_parts[1]);
+
+                // Generate unique filename
+                $filename = uniqid() . '.' . $image_type;
+
+                // Store the file
+                $path = 'suggested-questions/' . $filename;
+                Storage::disk('do')->put($path, $image_base64);
+
+                // Generate URL
+                $url = Storage::disk('do')->url($path);
+                $imagePaths[] = $url;
             }
+
             $suggestedQuestion->images = $imagePaths;
             $suggestedQuestion->save();
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\SuggestedQuestion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
@@ -22,6 +23,13 @@ class SuggestedQuestionController extends Controller
     // Store a newly created resource in storage.
     public function store(Request $request)
     {
+        Log::channel('suggested-question')->info('Received request data:', [
+            'all' => $request->all(),
+            'files' => $request->allFiles(),
+            'headers' => $request->headers->all(),
+            'content-type' => $request->header('Content-Type'),
+        ]);
+
         try {
             $validatedData = $request->validate([
                 'question' => 'required|string',

@@ -24,11 +24,16 @@ class SuggestedQuestionController extends Controller
     public function store(Request $request)
     {
         Log::channel('suggested-question')->info('Received request data:', [
+            'isJson' => $request->isJson(),
             'all' => $request->all(),
             'files' => $request->allFiles(),
             'headers' => $request->headers->all(),
             'content-type' => $request->header('Content-Type'),
         ]);
+
+        if ($request->isJson()) {
+            return $this->error('Invalid Content-Type. Use multipart/form-data for file uploads.', 415);
+        }
 
         try {
             $validatedData = $request->validate([

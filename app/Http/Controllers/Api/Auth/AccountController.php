@@ -44,9 +44,21 @@ class AccountController extends Controller
                 $validatedData['password'] = bcrypt($validatedData['password']);
             }
 
-            if ($request->hasFile('avatar')) {
-                $avatarPath = $request->file('avatar')->store('avatars', 'do');
-                $validatedData['avatar'] = $avatarPath;
+            if ($request->avatar) {
+                // Remove data:image/jpeg;base64, from the base64 string
+                $image_parts = explode(";base64,", $request->avatar);
+                $image_type_aux = explode("image/", $image_parts[0]);
+                $image_type = $image_type_aux[1];
+                $image_base64 = base64_decode($image_parts[1]);
+
+                // Generate unique filename
+                $filename = uniqid() . '.' . $image_type;
+
+                // Store the file
+                $path = 'avatars/' . $filename;
+                Storage::disk('do')->put($path, $image_base64);
+
+                $validatedData['avatar'] = $path;
             }
 
             $user->update($validatedData);

@@ -126,7 +126,7 @@ class SuggestedQuestionController extends Controller
                 Storage::disk('do')->put($path, $image_base64);
 
                 // Generate URL
-                $url = Storage::disk('do')->url($path);
+                $url = media_url($path);
                 $imagePaths[] = $url;
             }
 

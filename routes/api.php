@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\QuestionFeedbackController;
 use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\Store\AddressController;
 use App\Http\Controllers\Api\Store\StoreOrderController;
 use App\Http\Controllers\Api\Store\StoreProductController;
 use App\Http\Controllers\Api\Store\StoreCategoryController;
@@ -88,6 +89,10 @@ Route::prefix('store')->group(function () {
     // Store Products
     Route::get('/products', [StoreProductController::class, 'index']);
     Route::get('/products/{id}', [StoreProductController::class, 'show']);
+
+    // Address
+    Route::get('/my-address',       [AddressController::class, 'myAddress'])->middleware('auth:sanctum');
+    Route::post('/my-address',      [AddressController::class, 'updateAddress'])->middleware('auth:sanctum');
 
     // Tap Payment callback route
     Route::get('/orders/callback', [StoreOrderController::class, 'callback'])->name('store.orders.callback');

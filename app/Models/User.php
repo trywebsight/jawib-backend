@@ -49,6 +49,11 @@ class User extends Authenticatable implements Wallet, Customer
         return $this->hasMany(StoreOrder::class);
     }
 
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
+    }
+
     public function games()
     {
         return $this->hasMany(Game::class);

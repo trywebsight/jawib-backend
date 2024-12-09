@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CouponController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\GameProgressController;
+use App\Http\Controllers\Api\GameToolsController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\PackagePaymentController;
@@ -54,6 +55,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/games/my-games',   [GameController::class, 'my_games']);
     Route::post('/games/create',    [GameController::class, 'create_game']);
     Route::get('/games/{id}',       [GameController::class, 'get_game']);
+    // Game Help tools
+    Route::post('/game-tools/joker',       [GameToolsController::class, 'joker']);
 
     // Game progress
     Route::get('/game-progress/{id}',   [GameProgressController::class, 'show']);

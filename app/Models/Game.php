@@ -13,6 +13,10 @@ class Game extends Model
         'teams' => 'array',
         // 'selected_categories' => 'array', // If 'categories' is also an array
     ];
+    protected $hidden = [
+        'played_times', // If 'categories' is also an array
+        'selected_categories', // If 'categories' is also an array
+    ];
 
     public function teams()
     {

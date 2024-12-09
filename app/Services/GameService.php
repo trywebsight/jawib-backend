@@ -149,4 +149,43 @@ class GameService
             return [];
         }
     }
+
+    public function joker(Game $game, int $question_id)
+    {
+        try {
+            // Find the current question
+            $currentQuestion = $game->questions()->findOrFail($question_id);
+
+            // Get a new random question from the same category and level
+            $newQuestion = Question::where('category_id', $currentQuestion->category_id)
+                ->where('level', $currentQuestion->level)
+                ->where('id', '!=', $currentQuestion->id) // Exclude current question
+                ->whereNotIn('id', $game->questions->pluck('id')) // Exclude questions already in the game
+                ->latest('id')
+                ->first();
+
+            if (!$newQuestion) {
+                throw new \Exception(__('no alternative questions available'));
+            }
+
+            // Prepare the response data
+            $response = [
+                'id' => $newQuestion->id,
+                'question' => $newQuestion->question,
+                'question_media_url' => media_url($newQuestion->question_media_url),
+                'question_media_type' => $newQuestion->question_media_type,
+                'answer' => $newQuestion->answer,
+                'answer_media_url' => media_url($newQuestion->answer_media_url),
+                'answer_media_type' => $newQuestion->answer_media_type,
+                'level' => $newQuestion->level,
+                'diff' => $newQuestion->diff,
+                'options' => $newQuestion->options,
+            ];
+
+            return $response;
+        } catch (\Exception $e) {
+            Log::error('Joker usage failed: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 }

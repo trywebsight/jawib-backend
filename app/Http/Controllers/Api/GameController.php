@@ -42,14 +42,14 @@ class GameController extends Controller
     function create_game(Request $request)
     {
 
-        $request->validate([
-            'title'         => 'required|string|max:255',
-            'teams'         => 'sometimes|array|min:2|max:4',
-            'categories'    => 'required|array|min:4|max:6',
-            'categories.*'  => 'exists:categories,id',
-        ]);
-        $user = auth('sanctum')->user();
         try {
+            $request->validate([
+                'title'         => 'required|string|max:255',
+                'teams'         => 'sometimes|array|min:2|max:4',
+                'categories'    => 'required|array|min:4|max:6',
+                'categories.*'  => 'exists:categories,id',
+            ]);
+            $user = auth('sanctum')->user();
             $game = $this->gameService->createGame($user, $request->all());
             return $this->success(['game' => $game], __('game created successfully'));
         } catch (\Exception $e) {

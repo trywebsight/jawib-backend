@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\SocialAuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CouponController;
+use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\GameProgressController;
 use App\Http\Controllers\Api\OrderController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Api\PackagePaymentController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\QuestionFeedbackController;
+use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\Store\StoreOrderController;
 use App\Http\Controllers\Api\Store\StoreProductController;
 use App\Http\Controllers\Api\Store\StoreCategoryController;
@@ -39,8 +41,9 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('/social/{provider}/login',      [SocialAuthController::class, 'redirect']);
     Route::get('/social/{provider}/callback',   [SocialAuthController::class, 'callback']);
     // user data
-    Route::get('/user',                         [AccountController::class, 'user']);
-    Route::post('/user',                        [AccountController::class, 'updateAccount']);
+    Route::get('/user',                         [AccountController::class, 'user'])->middleware('auth:sanctum');
+    Route::post('/user',                        [AccountController::class, 'updateAccount'])->middleware('auth:sanctum');
+    Route::post('/change-password',             [AccountController::class, 'changePassword'])->middleware('auth:sanctum');
 });
 
 
@@ -91,6 +94,8 @@ Route::prefix('store')->group(function () {
     Route::get('/orders/{id}', [StoreOrderController::class, 'show'])->middleware('auth:sanctum');
 });
 
+// settings rouet
+Route::get('/settings', [SettingController::class, 'index']);
 
 // Site resource APIs
 Route::apiResources(
@@ -98,6 +103,7 @@ Route::apiResources(
         'packages'          => PackageController::class,
         'categories'        => CategoryController::class,
         'pages'             => PageController::class,
+        'faqs'              => FaqController::class,
     ],
     ['only' => ['index', 'show']]
 );

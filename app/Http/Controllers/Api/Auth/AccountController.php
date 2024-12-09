@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,6 +26,9 @@ class AccountController extends Controller
     {
         try {
             $user = $request->user('sanctum');
+            if (!$user) {
+                return $this->error([], __('not authorized'), 403);
+            }
             $validator = Validator::make($request->all(), [
                 'name'          => 'sometimes|string|max:255',
                 'email'         => 'sometimes|email|max:255|unique:users,email,' . $user->id,
@@ -64,6 +68,46 @@ class AccountController extends Controller
             $user->update($validatedData);
 
             return $this->success($user, __('updated successfully'));
+        } catch (\Throwable $th) {
+            return $this->error(['errors' => [$th->getMessage()]], __('error, try again later'));
+        }
+    }
+
+    // change password
+    public function changePassword(Request $request)
+    {
+        try {
+            $user = $request->user('sanctum');
+            if (!$user) {
+                return $this->error([], __('not authorized'), 403);
+            }
+            $validator = Validator::make($request->all(), [
+                'current_password'  => 'required|string|min:6',
+                'new_password'      => [
+                    'required',
+                    'string',
+                    'min:6',
+                    'confirmed',
+                    // function ($attribute, $value, $fail) use ($user) {
+                    //     if (Hash::check($value, $user->password)) {
+                    //         $fail(__('new password can\'t be same as current password'));
+                    //     }
+                    // },
+                ],
+            ]);
+
+            if ($validator->fails()) {
+                return $this->error(['errors' => $validator->errors()], $validator->errors()->first(), 422);
+            }
+
+            if (!Hash::check($request->current_password, $user->password)) {
+                return $this->error(['errors' => ['current_password' => [__('current password is not correct')]]], __('current password is not correct'), 422);
+            }
+
+            $user->password = bcrypt($request->new_password);
+            $user->save();
+
+            return $this->success($user, __('password updated successfully'));
         } catch (\Throwable $th) {
             return $this->error(['errors' => [$th->getMessage()]], __('error, try again later'));
         }

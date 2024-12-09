@@ -17,6 +17,11 @@ class QuestionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'questions';
 
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('personalized questions');
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -41,12 +46,10 @@ class QuestionsRelationManager extends RelationManager
             ->filters([
                 //
             ])
-            ->headerActions([
-            ])
+            ->headerActions([])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->bulkActions([
-            ]);
+            ->bulkActions([]);
     }
 }

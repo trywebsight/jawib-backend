@@ -17,6 +17,10 @@ class CategoriesRelationManager extends RelationManager
 {
     protected static string $relationship = 'categories';
 
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('personalized categories');
+    }
 
     public function table(Table $table): Table
     {

@@ -45,27 +45,40 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
         return [
             Components\Tabs::make('Settings')
                 ->tabs([
-                    Components\Tabs\Tab::make(__('general'))
+                    Components\Tabs\Tab::make(__('help center'))
                         ->schema([
-                            Components\FileUpload::make('site_logo')
-                                ->label(__('logo'))
-                                ->image()
-                                ->imageEditor()
-                                ->directory('settings')
-                                ->disk('do'),
-                            Components\FileUpload::make('site_favicon')
-                                ->label(__('favicon'))
-                                ->image()
-                                ->imageEditor()
-                                ->directory('settings')
-                                ->disk('do'),
+                            Components\TextInput::make('contact_email')
+                                ->placeholder('mailto:user@example.com')
+                                ->label(__('contact email')),
+                            Components\TextInput::make('contact_instagram')
+                                ->placeholder('https://www.instagram.com/username')
+                                ->label(__('instagram')),
+                            Components\TextInput::make('contact_website')
+                                ->placeholder('https://www.example.com')
+                                ->label(__('website')),
                         ])->columns(2),
+                    // Components\Tabs\Tab::make(__('general'))
+                    //     ->schema([
+                    //         Components\FileUpload::make('site_logo')
+                    //             ->label(__('logo'))
+                    //             ->image()
+                    //             ->columnSpanFull()
+                    //             ->imageEditor()
+                    //             ->directory('settings')
+                    //             ->disk('do'),
+                    //         // Components\FileUpload::make('site_favicon')
+                    //         //     ->label(__('favicon'))
+                    //         //     ->image()
+                    //         //     ->imageEditor()
+                    //         //     ->directory('settings')
+                    //         //     ->disk('do'),
+                    //     ])->columns(2),
                     Components\Tabs\Tab::make(__('payment'))
                         ->schema([
                             Components\Toggle::make('test_mode')
                                 ->label(__('test mode')),
                             Components\TextInput::make('secret_key')
-                                ->label(__('secret key'))
+                                ->label('Tap ' . __('secret key'))
                                 ->columnSpanFull(),
                         ])->columns(2),
                     Components\Tabs\Tab::make(__('game settings'))
@@ -83,6 +96,7 @@ class SettingsManager extends Page implements Forms\Contracts\HasForms
                                 ->acceptedFileTypes(['audio/*'])
                                 ->disk('do'),
                         ])->columns(2),
+
                 ]),
         ];
     }

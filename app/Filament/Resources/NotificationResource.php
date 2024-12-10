@@ -85,8 +85,10 @@ class NotificationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label(__('name')),
-                Tables\Columns\TextColumn::make('title')->label(__('title')),
+                Tables\Columns\TextColumn::make('name')->label(__('name'))
+                ->limit(25),
+                Tables\Columns\TextColumn::make('title')->label(__('title'))
+                ->limit(20),
                 Tables\Columns\TextColumn::make('sender.name')->label(__('sender')),
                 Tables\Columns\ImageColumn::make('image')->label(__('image'))
                     ->placeholder(__('no image')),

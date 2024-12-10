@@ -134,6 +134,19 @@ return [
             'days' => 14,
         ],
 
+        'onesignal' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/onesignal/onesignal.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+
+        'push_notifications' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/push_notifications/push_notifications.log'),
+            'level' => 'error',
+        ],
+
     ],
 
 ];

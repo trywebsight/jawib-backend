@@ -51,6 +51,13 @@ return [
         'senderName' => env('KWT_SMS_SENDER', 'Jawib'),
     ],
 
+    'onesignal' => [
+        'app_id'                => env('ONESIGNAL_APP_ID'),
+        'api_key'               => env('ONESIGNAL_REST_API_KEY'),
+        'user_auth_key'         => env('ONESIGNAL_USER_AUTH_KEY'),
+        'guzzle_client_timeout' => env('ONESIGNAL_GUZZLE_CLIENT_TIMEOUT', 0),
+    ],
+
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),

@@ -13,6 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Bavix\Wallet\Traits\CanPay;
 use Bavix\Wallet\Interfaces\Customer;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable implements Wallet, Customer
 {
@@ -98,5 +99,10 @@ class User extends Authenticatable implements Wallet, Customer
         }
 
         return $country_code . $phone;
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('phone_verified', true);
     }
 }
